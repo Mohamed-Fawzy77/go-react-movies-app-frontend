@@ -1,23 +1,54 @@
-import logo from './logo.svg';
-import './App.css';
+import { Link, Outlet } from "react-router-dom";
+import Home from "./components/Home";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <div className="row">
+        <div className="col">
+          <h1 className="mt-3">Movies</h1>
+        </div>
+        <div className="col text-end">
+          <Link to="#!">
+            <span className="badge bg-success">login</span>
+          </Link>
+        </div>
+        <hr className="mb-3"></hr>
+      </div>
+
+      <div className="row">
+        <div className="col-md-2">
+          <nav>
+            <div className="list-group">
+              <Link to="/" className="list-group-item list-group-item-action">
+                Home
+              </Link>
+              <Link
+                to="/movies"
+                className="list-group-item list-group-item-action"
+              >
+                Movies
+              </Link>
+
+              <Link to="#!" className="list-group-item list-group-item-action">
+                Genres
+              </Link>
+              <Link to="#!" className="list-group-item list-group-item-action">
+                Add Movie
+              </Link>
+              <Link to="#!" className="list-group-item list-group-item-action">
+                Manage Catalogue
+              </Link>
+              <Link to="#!" className="list-group-item list-group-item-action">
+                GraphQL
+              </Link>
+            </div>
+          </nav>
+        </div>
+        <div className="col-md-10">
+          <Outlet />
+        </div>
+      </div>
     </div>
   );
 }
