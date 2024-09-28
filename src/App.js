@@ -1,5 +1,4 @@
 import { Link, Outlet } from "react-router-dom";
-import Home from "./components/Home";
 
 function App() {
   return (
@@ -9,7 +8,7 @@ function App() {
           <h1 className="mt-3">Movies</h1>
         </div>
         <div className="col text-end">
-          <Link to="#!">
+          <Link to="/login">
             <span className="badge bg-success">login</span>
           </Link>
         </div>
@@ -23,23 +22,19 @@ function App() {
               <Link to="/" className="list-group-item list-group-item-action">
                 Home
               </Link>
-              <Link
-                to="/movies"
-                className="list-group-item list-group-item-action"
-              >
+              <Link to="/movies" className="list-group-item list-group-item-action">
                 Movies
               </Link>
-
-              <Link to="#!" className="list-group-item list-group-item-action">
+              <Link to="/genres" className="list-group-item list-group-item-action">
                 Genres
               </Link>
-              <Link to="#!" className="list-group-item list-group-item-action">
+              <Link to="/admin/movie/0" className="list-group-item list-group-item-action">
                 Add Movie
               </Link>
-              <Link to="#!" className="list-group-item list-group-item-action">
+              <Link to="/manage-catalogue" className="list-group-item list-group-item-action">
                 Manage Catalogue
               </Link>
-              <Link to="#!" className="list-group-item list-group-item-action">
+              <Link to="/graphql" className="list-group-item list-group-item-action">
                 GraphQL
               </Link>
             </div>
