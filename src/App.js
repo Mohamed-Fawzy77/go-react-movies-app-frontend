@@ -1,6 +1,6 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import Alert from "./components/Alert";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { capitalize } from "./utils/string";
 
 function App() {
@@ -10,13 +10,28 @@ function App() {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (!jwt) {
+      const token = localStorage.getItem("token");
+      if (token && token !== "undefined") {
+        setJwt(token);
+      } else {
+        navigate("/login");
+      }
+    } else {
+      navigate("/");
+    }
+  }, []);
+
   const login = (jwt) => {
     setJwt(jwt);
+    localStorage.setItem("token", jwt);
     navigate("/");
   };
 
   const logout = () => {
     setJwt("");
+    localStorage.removeItem("token");
     navigate("/login");
   };
 
@@ -35,7 +50,7 @@ function App() {
       <Alert className={alertClassName} message={alertMessage} />
       <div className="row">
         <div className="col">
-          <h1 className="mt-3">Movies</h1>
+          <h1 className="mt-3 text-center">Delivery Souq Gomla</h1>
         </div>
         <div className="col text-end">
           {jwt ? (
@@ -57,17 +72,18 @@ function App() {
         <div className="col-md-2">
           <nav>
             <div className="list-group">
-              <Link to="/" className="list-group-item list-group-item-action">
-                Home
-              </Link>
-              <Link to="/movies" className="list-group-item list-group-item-action">
-                Movies
-              </Link>
-              <Link to="/genres" className="list-group-item list-group-item-action">
-                Genres
-              </Link>
               {jwt && (
                 <>
+                  <Link to="/" className="list-group-item list-group-item-action">
+                    Home
+                  </Link>
+                  <Link to="/movies" className="list-group-item list-group-item-action">
+                    Movies
+                  </Link>
+                  <Link to="/genres" className="list-group-item list-group-item-action">
+                    Genres
+                  </Link>
+
                   <Link to="/admin/movie/0" className="list-group-item list-group-item-action">
                     Add Movie
                   </Link>
