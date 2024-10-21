@@ -4,7 +4,7 @@ import App from "./App";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ErrorPage from "./components/ErrorPage";
 import Home from "./components/Home";
-import Orders from "./components/Movies";
+import Orders from "./components/Orders";
 import Genres from "./Genres";
 import EditMovie from "./components/EditMovie";
 import ManageCatalogue from "./components/ManageCatalouge";
@@ -28,7 +28,7 @@ const router = createBrowserRouter([
       },
 
       {
-        path: "/movies",
+        path: "/orders",
         element: <Orders />,
       },
       {

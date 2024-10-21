@@ -77,8 +77,8 @@ function App() {
                   <Link to="/" className="list-group-item list-group-item-action">
                     Home
                   </Link>
-                  <Link to="/movies" className="list-group-item list-group-item-action">
-                    Movies
+                  <Link to="/orders" className="list-group-item list-group-item-action">
+                    Orders
                   </Link>
                   <Link to="/genres" className="list-group-item list-group-item-action">
                     Genres
