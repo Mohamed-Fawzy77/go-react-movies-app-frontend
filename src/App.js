@@ -27,7 +27,7 @@ function App() {
   useEffect(() => {
     const fetchPP = async () => {
       try {
-        const response = await fetch("http://localhost:5000/product-pricing", { method: "GET" });
+        const response = await fetch("http://localhost:5000/product-pricings", { method: "GET" });
         const data = await response.json();
 
         setSPs(data);
@@ -102,12 +102,6 @@ function App() {
 
                   <Link to="/sps" className="list-group-item list-group-item-action">
                     Standard Products
-                  </Link>
-                  <Link to="/manage" className="list-group-item list-group-item-action">
-                    Manage Catalogue
-                  </Link>
-                  <Link to="/graphql" className="list-group-item list-group-item-action">
-                    GraphQL
                   </Link>
                 </>
               )}
