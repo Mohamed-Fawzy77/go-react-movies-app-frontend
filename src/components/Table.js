@@ -1,15 +1,13 @@
 import React from "react";
 import { useTable, usePagination, useSortBy } from "react-table";
-// import "react-table/react-table.css"; // Optional: for basic styling
 
 const Table = ({ columns, data }) => {
-  // Use the useTable hook to create a table instance
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
     prepareRow,
-    page, // Instead of rows, use page for pagination
+    page,
     canPreviousPage,
     canNextPage,
     pageOptions,
@@ -21,8 +19,8 @@ const Table = ({ columns, data }) => {
       columns,
       data,
     },
-    useSortBy, // Hook for sorting
-    usePagination // Hook for pagination
+    useSortBy,
+    usePagination
   );
 
   return (

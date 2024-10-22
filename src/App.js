@@ -7,6 +7,7 @@ function App() {
   const [alertMessage, setAlertMessage] = useState("");
   const [alertClassName, setAlertClassName] = useState("d-none");
   const [jwt, setJwt] = useState("");
+  const [SPs, setSPs] = useState([]);
 
   const navigate = useNavigate();
 
@@ -21,6 +22,21 @@ function App() {
     } else {
       navigate("/");
     }
+  }, []);
+
+  useEffect(() => {
+    const fetchPP = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/product-pricing", { method: "GET" });
+        const data = await response.json();
+
+        setSPs(data);
+      } catch (error) {
+        setDangerAlert("couldn't fetch product pricing");
+      }
+    };
+
+    fetchPP();
   }, []);
 
   const login = (jwt) => {
@@ -80,14 +96,14 @@ function App() {
                   <Link to="/orders" className="list-group-item list-group-item-action">
                     Orders
                   </Link>
-                  <Link to="/genres" className="list-group-item list-group-item-action">
-                    Genres
+                  <Link to="/create-order" className="list-group-item list-group-item-action">
+                    Create Order
                   </Link>
 
-                  <Link to="/admin/movie/0" className="list-group-item list-group-item-action">
-                    Add Movie
+                  <Link to="/sps" className="list-group-item list-group-item-action">
+                    Standard Processes
                   </Link>
-                  <Link to="/manage-catalogue" className="list-group-item list-group-item-action">
+                  <Link to="/manage" className="list-group-item list-group-item-action">
                     Manage Catalogue
                   </Link>
                   <Link to="/graphql" className="list-group-item list-group-item-action">
@@ -104,6 +120,7 @@ function App() {
               removeAlert,
               setDangerAlert,
               login,
+              PP: SPs,
             }}
           />
         </div>

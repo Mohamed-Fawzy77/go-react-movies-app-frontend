@@ -5,12 +5,13 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ErrorPage from "./components/ErrorPage";
 import Home from "./components/Home";
 import Orders from "./components/Orders";
-import Genres from "./Genres";
-import EditMovie from "./components/EditMovie";
+import CreateOrder from "./CreateOrder";
+import StandardProducts from "./components/StandardProducts";
 import ManageCatalogue from "./components/ManageCatalouge";
 import GraphQL from "./components/GraphQL";
 import Login from "./components/Login";
 import Movie from "./components/Movie";
+import StandardProductDetails from "./components/StandardProductDetails";
 
 const router = createBrowserRouter([
   {
@@ -36,16 +37,16 @@ const router = createBrowserRouter([
         element: <Movie />,
       },
       {
-        path: "/genres",
-        element: <Genres />,
+        path: "/create-order",
+        element: <CreateOrder />,
       },
       {
-        path: "/admin/movie/0",
-        element: <EditMovie />,
+        path: "/sps",
+        element: <StandardProducts />,
       },
       {
-        path: "/manage-catalogue",
-        element: <ManageCatalogue />,
+        path: "/sps/:id",
+        element: <StandardProductDetails />,
       },
       {
         path: "/graphql",

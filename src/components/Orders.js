@@ -23,10 +23,6 @@ const OrdersTable = () => {
         const data = await response.json();
         console.log({ data });
 
-        // const data = [
-        //   { orderId: "12345", customerName: "John Doe", totalPrice: 100, date: "2024-10-20" },
-        //   { orderId: "67890", customerName: "Jane Smith", totalPrice: 200, date: "2024-10-19" },
-        // ];
         setOrders(data.orders);
       } catch (error) {
         setError("Error fetching orders");
@@ -37,27 +33,6 @@ const OrdersTable = () => {
 
     fetchOrders();
   }, []);
-
-  const data = React.useMemo(
-    () => [
-      {
-        name: "John Doe",
-        age: 28,
-        role: "Developer",
-      },
-      {
-        name: "Jane Smith",
-        age: 34,
-        role: "Designer",
-      },
-      {
-        name: "Alice Johnson",
-        age: 23,
-        role: "Manager",
-      },
-    ],
-    []
-  );
 
   const columns = React.useMemo(
     () => [
@@ -91,7 +66,19 @@ const OrdersTable = () => {
       },
       {
         Header: "products",
-        accessor: (item) => "hello\n\nman",
+        accessor: (item) => item.orderProducts,
+        Cell: ({ value }) =>
+          console.log({ value }) || (
+            <ul>
+              {value.map((product, index) => (
+                <li key={index}>
+                  {product.productPricing.product.name}:{product.productPricing.units * product.quantity} x{" "}
+                  {product.productPricing.totalKilos * product.quantity} x {product.productPricing.pricePerKiloOrUnit} ={" "}
+                  {product.productPricing.totalPrice}{" "}
+                </li>
+              ))}
+            </ul>
+          ),
       },
     ],
     []
