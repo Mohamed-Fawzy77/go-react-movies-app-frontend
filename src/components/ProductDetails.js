@@ -11,7 +11,7 @@ const ProductDetails = () => {
     totalKilos: null,
     pricePerKiloOrUnit: 0,
     totalPrice: 0,
-    product: productId,
+    product: productId, // Automatically set productId when creating pricing
   });
   const [editPricing, setEditPricing] = useState(null);
 
@@ -40,13 +40,13 @@ const ProductDetails = () => {
 
   const handleAddPricing = async () => {
     try {
-      await axios.post("http://localhost:5000/product-pricings", newPricing);
+      const response = await axios.post("http://localhost:5000/product-pricings", newPricing);
       setNewPricing({
         units: 0,
         totalKilos: null,
         pricePerKiloOrUnit: 0,
         totalPrice: 0,
-        product: productId,
+        product: productId, // Keep the product ID in the new pricing
       });
       fetchPricings();
     } catch (error) {
@@ -54,7 +54,7 @@ const ProductDetails = () => {
     }
   };
 
-  const handleRemovePricing = async (pricingId: string) => {
+  const handleRemovePricing = async (pricingId) => {
     try {
       await axios.delete(`http://localhost:5000/product-pricings/${pricingId}`);
       fetchPricings();
@@ -84,7 +84,7 @@ const ProductDetails = () => {
 
       <h3>Product Pricing</h3>
       <ul>
-        {pricings.map((pricing: any) => (
+        {pricings.map((pricing) => (
           <li key={pricing._id}>
             Units: {pricing.units}, Total Kilos: {pricing.totalKilos}, Price per Kilo/Unit: {pricing.pricePerKiloOrUnit}, Total Price:{" "}
             {pricing.totalPrice}
@@ -95,24 +95,28 @@ const ProductDetails = () => {
       </ul>
 
       <h3>Add New Pricing</h3>
+      <h5>units</h5>
       <input
         type="number"
         value={newPricing.units}
         onChange={(e) => setNewPricing({ ...newPricing, units: parseInt(e.target.value) })}
         placeholder="Units"
       />
+      <h5>total kilos</h5>
       <input
         type="number"
         value={newPricing.totalKilos || ""}
         onChange={(e) => setNewPricing({ ...newPricing, totalKilos: parseFloat(e.target.value) })}
         placeholder="Total Kilos"
       />
+      <h5>price per kilo/unit</h5>
       <input
         type="number"
         value={newPricing.pricePerKiloOrUnit}
         onChange={(e) => setNewPricing({ ...newPricing, pricePerKiloOrUnit: parseFloat(e.target.value) })}
         placeholder="Price per Kilo/Unit"
       />
+      <h5>total price</h5>
       <input
         type="number"
         value={newPricing.totalPrice}
