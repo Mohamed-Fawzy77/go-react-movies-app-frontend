@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const StandardProducts = () => {
   const [products, setProducts] = useState([]);
   const [newProduct, setNewProduct] = useState({ name: "", category: 1 });
   const [editProduct, setEditProduct] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProducts();
@@ -14,8 +16,6 @@ const StandardProducts = () => {
     try {
       const response = await axios.get("http://localhost:5000/standard-products");
       setProducts(response.data);
-
-      console.log({ sps: response.data });
     } catch (error) {
       console.error("Error fetching products", error);
     }
@@ -57,7 +57,12 @@ const StandardProducts = () => {
       <ul>
         {products.map((product) => (
           <li key={product._id}>
-            {product.name} - {product.category === 1 ? "Fruit" : "Vegetable"}
+            <span
+              onClick={() => navigate(`/sps/${product._id}`)} // Navigate on click
+              style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}
+            >
+              {product.name} - {product.category === 1 ? "Fruit" : "Vegetable"}
+            </span>
             <button onClick={() => handleDeleteProduct(product._id)}>Delete</button>
             <button onClick={() => setEditProduct(product)}>Edit</button>
           </li>
