@@ -1,0 +1,158 @@
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+
+const ProductDetails = () => {
+  const { productId } = useParams(); // Get the product ID from URL
+  const [product, setProduct] = useState(null);
+  const [pricings, setPricings] = useState([]);
+  const [newPricing, setNewPricing] = useState({
+    units: 0,
+    totalKilos: null,
+    pricePerKiloOrUnit: 0,
+    totalPrice: 0,
+    product: productId,
+  });
+  const [editPricing, setEditPricing] = useState(null);
+
+  useEffect(() => {
+    fetchProduct();
+    fetchPricings();
+  }, [productId]);
+
+  const fetchProduct = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/products/${productId}`);
+      setProduct(response.data);
+    } catch (error) {
+      console.error("Error fetching product", error);
+    }
+  };
+
+  const fetchPricings = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/product-pricings?product=${productId}`);
+      setPricings(response.data);
+    } catch (error) {
+      console.error("Error fetching pricings", error);
+    }
+  };
+
+  const handleAddPricing = async () => {
+    try {
+      await axios.post("http://localhost:5000/product-pricings", newPricing);
+      setNewPricing({
+        units: 0,
+        totalKilos: null,
+        pricePerKiloOrUnit: 0,
+        totalPrice: 0,
+        product: productId,
+      });
+      fetchPricings();
+    } catch (error) {
+      console.error("Error adding pricing", error);
+    }
+  };
+
+  const handleRemovePricing = async (pricingId: string) => {
+    try {
+      await axios.delete(`http://localhost:5000/product-pricings/${pricingId}`);
+      fetchPricings();
+    } catch (error) {
+      console.error("Error removing pricing", error);
+    }
+  };
+
+  const handleEditPricing = async () => {
+    if (!editPricing) return;
+    try {
+      await axios.put(`http://localhost:5000/product-pricings/${editPricing._id}`, editPricing);
+      setEditPricing(null);
+      fetchPricings();
+    } catch (error) {
+      console.error("Error editing pricing", error);
+    }
+  };
+
+  return (
+    <div>
+      {product && (
+        <div>
+          <h2>{product.name}</h2>
+        </div>
+      )}
+
+      <h3>Product Pricing</h3>
+      <ul>
+        {pricings.map((pricing: any) => (
+          <li key={pricing._id}>
+            Units: {pricing.units}, Total Kilos: {pricing.totalKilos}, Price per Kilo/Unit: {pricing.pricePerKiloOrUnit}, Total Price:{" "}
+            {pricing.totalPrice}
+            <button onClick={() => handleRemovePricing(pricing._id)}>Remove</button>
+            <button onClick={() => setEditPricing(pricing)}>Edit</button>
+          </li>
+        ))}
+      </ul>
+
+      <h3>Add New Pricing</h3>
+      <input
+        type="number"
+        value={newPricing.units}
+        onChange={(e) => setNewPricing({ ...newPricing, units: parseInt(e.target.value) })}
+        placeholder="Units"
+      />
+      <input
+        type="number"
+        value={newPricing.totalKilos || ""}
+        onChange={(e) => setNewPricing({ ...newPricing, totalKilos: parseFloat(e.target.value) })}
+        placeholder="Total Kilos"
+      />
+      <input
+        type="number"
+        value={newPricing.pricePerKiloOrUnit}
+        onChange={(e) => setNewPricing({ ...newPricing, pricePerKiloOrUnit: parseFloat(e.target.value) })}
+        placeholder="Price per Kilo/Unit"
+      />
+      <input
+        type="number"
+        value={newPricing.totalPrice}
+        onChange={(e) => setNewPricing({ ...newPricing, totalPrice: parseFloat(e.target.value) })}
+        placeholder="Total Price"
+      />
+      <button onClick={handleAddPricing}>Add Pricing</button>
+
+      {editPricing && (
+        <div>
+          <h3>Edit Pricing</h3>
+          <input
+            type="number"
+            value={editPricing.units}
+            onChange={(e) => setEditPricing({ ...editPricing, units: parseInt(e.target.value) })}
+            placeholder="Units"
+          />
+          <input
+            type="number"
+            value={editPricing.totalKilos || ""}
+            onChange={(e) => setEditPricing({ ...editPricing, totalKilos: parseFloat(e.target.value) })}
+            placeholder="Total Kilos"
+          />
+          <input
+            type="number"
+            value={editPricing.pricePerKiloOrUnit}
+            onChange={(e) => setEditPricing({ ...editPricing, pricePerKiloOrUnit: parseFloat(e.target.value) })}
+            placeholder="Price per Kilo/Unit"
+          />
+          <input
+            type="number"
+            value={editPricing.totalPrice}
+            onChange={(e) => setEditPricing({ ...editPricing, totalPrice: parseFloat(e.target.value) })}
+            placeholder="Total Price"
+          />
+          <button onClick={handleEditPricing}>Save</button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ProductDetails;

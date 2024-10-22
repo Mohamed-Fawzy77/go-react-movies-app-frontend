@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 import axios from "axios";
 
 const StandardProductDetails = () => {
@@ -8,6 +8,7 @@ const StandardProductDetails = () => {
   const [products, setProducts] = useState([]);
   const [newProduct, setNewProduct] = useState({ name: "", standardProduct: id });
   const [editProduct, setEditProduct] = useState(null);
+  const navigate = useNavigate(); // Use navigate for redirecting
 
   useEffect(() => {
     fetchStandardProduct();
@@ -42,7 +43,7 @@ const StandardProductDetails = () => {
     }
   };
 
-  const handleRemoveProduct = async (productId: string) => {
+  const handleRemoveProduct = async (productId) => {
     try {
       await axios.delete(`http://localhost:5000/products/${productId}`);
       fetchProducts();
@@ -73,9 +74,14 @@ const StandardProductDetails = () => {
 
       <h3>Products</h3>
       <ul>
-        {products.map((product: any) => (
+        {products.map((product) => (
           <li key={product._id}>
-            {product.name}
+            <span
+              onClick={() => navigate(`/products/${product._id}`)} // Navigate to product details
+              style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}
+            >
+              {product.name}
+            </span>
             <button onClick={() => handleRemoveProduct(product._id)}>Remove</button>
             <button onClick={() => setEditProduct(product)}>Edit</button>
           </li>

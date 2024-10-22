@@ -12,6 +12,7 @@ import GraphQL from "./components/GraphQL";
 import Login from "./components/Login";
 import Movie from "./components/Movie";
 import StandardProductDetails from "./components/StandardProductDetails";
+import ProductDetails from "./components/ProductDetails";
 
 const router = createBrowserRouter([
   {
@@ -49,8 +50,8 @@ const router = createBrowserRouter([
         element: <StandardProductDetails />,
       },
       {
-        path: "/graphql",
-        element: <GraphQL />,
+        path: "/products/:id",
+        element: <ProductDetails />,
       },
       {
         path: "/login",

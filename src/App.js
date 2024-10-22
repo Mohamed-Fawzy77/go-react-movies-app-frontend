@@ -101,7 +101,7 @@ function App() {
                   </Link>
 
                   <Link to="/sps" className="list-group-item list-group-item-action">
-                    Standard Processes
+                    Standard Products
                   </Link>
                   <Link to="/manage" className="list-group-item list-group-item-action">
                     Manage Catalogue
