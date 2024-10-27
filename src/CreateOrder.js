@@ -73,14 +73,12 @@ const ProductPricingButtons = () => {
 
   const handleCreateOrder = async () => {
     try {
-      //make a var called deliveryDate it should be something like 2024-10-01 if it's today or 2024-10-02 if it's tomorrow or 2024-10-03 if it's a custom date
-
       const deliveryDate =
         deliveryDateOption === "today"
-          ? new Date(Date.now())
+          ? new Date(Date.now()).toISOString().slice(0, 10)
           : deliveryDateOption === "tomorrow"
-          ? new Date(Date.now() + 24 * 60 * 60 * 1000)
-          : new Date(customDeliveryDate);
+          ? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
+          : new Date(customDeliveryDate).toISOString().slice(0, 10);
 
       await axios.post(
         "http://localhost:5000/orders",
@@ -90,10 +88,7 @@ const ProductPricingButtons = () => {
           discount: parseInt(discount),
           buyer: selectedUser,
           deliveryAgent: selectedDeliveryAgent,
-          deliveryDate:
-            deliveryDateOption === "tomorrow"
-              ? new Date(Date.now() + 24 * 60 * 60 * 1000)
-              : new Date(customDeliveryDate),
+          deliveryDate,
         },
         {
           headers: {

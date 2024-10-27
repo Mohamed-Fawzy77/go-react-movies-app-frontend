@@ -67,14 +67,15 @@ const OrdersTable = () => {
       {
         Header: "products",
         accessor: (item) => item.orderProducts,
+        minWidth: "400px",
         Cell: ({ value }) =>
           console.log({ value }) || (
             <ul>
               {value.map((product, index) => (
                 <li key={index}>
                   {product.productPricing.product.name}:{product.productPricing.units * product.quantity} x{" "}
-                  {product.productPricing.totalKilos * product.quantity} x {product.productPricing.pricePerKiloOrUnit} ={" "}
-                  {product.productPricing.totalPrice}{" "}
+                  {product.productPricing.totalKilos * product.quantity} x{" "}
+                  {product.productPricing.pricePerKiloOrUnit} = {product.productPricing.totalPrice}{" "}
                 </li>
               ))}
             </ul>

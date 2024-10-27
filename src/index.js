@@ -14,6 +14,7 @@ import Movie from "./components/Movie";
 import StandardProductDetails from "./components/StandardProductDetails";
 import ProductDetails from "./components/ProductDetails";
 import UsersPage from "./components/UsersPage";
+import PrintOrders from "./components/PrintOrders";
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
       {
         path: "/orders",
         element: <Orders />,
+      },
+      {
+        path: "/print-orders",
+        element: <PrintOrders />,
       },
       {
         path: "/movies/:id",
