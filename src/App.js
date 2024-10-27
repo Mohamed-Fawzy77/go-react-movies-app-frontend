@@ -431,6 +431,39 @@ function App() {
     },
   ];
 
+  const deliveryAgents = [
+    {
+      _id: "6719685567199e74865a0b60",
+      phone: "011558711111",
+      password: "$2b$10$ZP8AVJ5nWls581l0ouEiIeoKInTbUqvHkFXLYEzioODKngl4YQW8G",
+      name: "hema Fawzy",
+      address: "my address",
+      isVerified: false,
+      type: "buyer",
+      __v: 0,
+    },
+    {
+      _id: "67196867b48bf78d908a8cad",
+      name: "ْA.3l العنوان ش عبد السلام عارف ع ناصيته قهوه كحله ومقله شيخ العرب عماره",
+      phone: "+201004612989",
+      address: "ْA.3l العنوان ش عبد السلام عارف ع ناصيته قهوه كحله ومقله شيخ العرب عماره",
+      type: "buyer",
+      isVerified: false,
+      notes: "",
+      __v: 0,
+    },
+    {
+      _id: "67196867b48bf78d908a8cae",
+      name: "A//mohamed Yassen",
+      phone: "01002499086",
+      address: "A//mohamed Yassen",
+      type: "buyer",
+      isVerified: false,
+      notes: "",
+      __v: 0,
+    },
+  ];
+
   const data = [
     {
       _id: "67142a5aa2bbf786361ac6e0",
@@ -679,6 +712,8 @@ function App() {
               PP: SPs,
               users,
               data,
+              deliveryAgents,
+              jwt,
             }}
           />
         </div>
