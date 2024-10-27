@@ -1,7 +1,29 @@
 import React from "react";
-import { useTable, usePagination, useSortBy } from "react-table";
+import { useTable, usePagination, useSortBy, useFilters } from "react-table";
+
+// Default UI for filtering
+const DefaultColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows, id } }) => {
+  const count = preFilteredRows.length;
+
+  return (
+    <input
+      value={filterValue || ""}
+      onChange={(e) => setFilter(e.target.value || undefined)} // Set undefined to remove the filter entirely
+      placeholder={`Search ${count} records...`}
+      style={{ width: "100%" }}
+    />
+  );
+};
 
 const Table = ({ columns, data }) => {
+  const defaultColumn = React.useMemo(
+    () => ({
+      // Default Filter UI
+      Filter: DefaultColumnFilter,
+    }),
+    []
+  );
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -18,7 +40,9 @@ const Table = ({ columns, data }) => {
     {
       columns,
       data,
+      defaultColumn, // Be sure to pass the defaultColumn option
     },
+    useFilters, // Use the useFilters hook
     useSortBy,
     usePagination
   );
@@ -36,6 +60,7 @@ const Table = ({ columns, data }) => {
                 >
                   {column.render("Header")}
                   <span>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
+                  <div>{column.canFilter ? column.render("Filter") : null}</div> {/* Filter input */}
                 </th>
               ))}
             </tr>

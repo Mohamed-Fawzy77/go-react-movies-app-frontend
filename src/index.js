@@ -13,6 +13,7 @@ import Login from "./components/Login";
 import Movie from "./components/Movie";
 import StandardProductDetails from "./components/StandardProductDetails";
 import ProductDetails from "./components/ProductDetails";
+import UsersPage from "./components/UsersPage";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
       {
         path: "/products/:id",
         element: <ProductDetails />,
+      },
+      {
+        path: "/users",
+        element: <UsersPage />,
       },
       {
         path: "/login",
