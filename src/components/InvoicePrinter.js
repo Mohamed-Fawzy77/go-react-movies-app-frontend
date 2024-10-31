@@ -162,8 +162,10 @@ margin: 0;}
             return (
               <div>
                 <div key={index}>
-                  {PP.product.name} : {orderProduct.quantity} * ({PP.units || "-"} * {PP.totalKilos || "-"} *{" "}
-                  {PP.pricePerKiloOrUnit || "-"} = {PP.totalPrice || "-"})
+                  {PP.product.name} : {orderProduct.quantity}
+                  {/* 
+                  * ({PP.units || "-"} * {PP.totalKilos || "-"} *{" "}
+                    {PP.pricePerKiloOrUnit || "-"} = {PP.totalPrice || "-"}) */}
                 </div>
               </div>
             );

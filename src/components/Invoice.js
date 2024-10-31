@@ -10,7 +10,7 @@ const RowTable = ({ orderProduct }) => {
     <tr>
       <td>{orderProduct.productPricing.product.name}</td>
       <td>{orderProduct.productPricing.pricePerKiloOrUnit || "-"}</td>
-      <td>{orderProduct.productPricing.pricePerKiloOrUnit * orderProduct.quantity || "-"}</td>
+      <td>{orderProduct.productPricing.totalKilos || "-"}</td>
       <td>{orderProduct.quantity * orderProduct.productPricing.units}</td>
       <td>{orderProduct.productPricing.totalPrice * orderProduct.quantity}</td>
     </tr>
