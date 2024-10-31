@@ -107,7 +107,7 @@ const ProductPricingButtons = () => {
       removeAlert();
       removeAlert("Order created successfully");
     } catch (error) {
-      console.log({ error });
+      console.error({ error });
       setDangerAlert("Error creating order " + error.message);
       console.error("Error creating order:", error);
     }
@@ -196,12 +196,17 @@ const ProductPricingButtons = () => {
           />
           <select
             value={selectedUser}
-            onChange={(e) => setSelectedUser(e.target.value)}
+            onChange={(e) => {
+              console.log({ value: e.target.value });
+              setSelectedUser(e.target.value);
+            }}
+            // onClick={(e) => {
+            //   console.log({ value: e.target.value });
+            //   setSelectedUser(e.target.value);
+            // }}
             style={{ width: "100%", padding: "8px" }}
           >
-            <option value="" disabled>
-              Select a user
-            </option>
+            <option value="">Select a user</option>
             {filteredUsers.map((user) => (
               <option key={user._id} value={user._id}>
                 {user.phone} - {user.name} - {user.address}

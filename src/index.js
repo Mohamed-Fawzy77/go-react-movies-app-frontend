@@ -7,14 +7,11 @@ import Home from "./components/Home";
 import Orders from "./components/Orders";
 import CreateOrder from "./CreateOrder";
 import StandardProducts from "./components/StandardProducts";
-import ManageCatalogue from "./components/ManageCatalouge";
-import GraphQL from "./components/GraphQL";
 import Login from "./components/Login";
 import Movie from "./components/Movie";
 import StandardProductDetails from "./components/StandardProductDetails";
 import ProductDetails from "./components/ProductDetails";
 import UsersPage from "./components/UsersPage";
-import PrintOrders from "./components/PrintOrders";
 
 const router = createBrowserRouter([
   {
@@ -34,10 +31,6 @@ const router = createBrowserRouter([
       {
         path: "/orders",
         element: <Orders />,
-      },
-      {
-        path: "/print-orders",
-        element: <PrintOrders />,
       },
       {
         path: "/movies/:id",

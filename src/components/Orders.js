@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useReactTable, getCoreRowModel, getSortedRowModel } from "@tanstack/react-table";
 import Table from "./Table";
+import axios from "axios";
+import InvoicePrinter from "./InvoicePrinter";
 
 const StatusMapper = {
   1: "Pending",
@@ -8,31 +10,25 @@ const StatusMapper = {
   6: "Cancelled",
 };
 
-const OrdersTable = () => {
+const OrdersTable = ({ deliveryAgents }) => {
+  console.log({ deliveryAgents });
+
   const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [date, setDate] = useState(new Date().toISOString().slice(0, 10).toString());
 
-  console.log({ orders });
-
-  // Fetch orders when the component mounts
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch("http://localhost:5000/orders", { method: "GET" }); // Replace with your API endpoint
-        const data = await response.json();
-        console.log({ data });
+        const res = await axios.get(`http://localhost:5000/orders?deliveryDate=${date}`);
 
-        setOrders(data.orders);
+        setOrders(res.data.orders);
       } catch (error) {
-        setError("Error fetching orders");
-      } finally {
-        setLoading(false);
+        console.error("error fetching orders", error);
       }
     };
 
     fetchOrders();
-  }, []);
+  }, [date]);
 
   const columns = React.useMemo(
     () => [
@@ -68,26 +64,35 @@ const OrdersTable = () => {
         Header: "products",
         accessor: (item) => item.orderProducts,
         minWidth: "400px",
-        Cell: ({ value }) =>
-          console.log({ value }) || (
-            <ul>
-              {value.map((product, index) => (
-                <li key={index}>
-                  {product.productPricing.product.name}:{product.productPricing.units * product.quantity} x{" "}
-                  {product.productPricing.totalKilos * product.quantity} x{" "}
-                  {product.productPricing.pricePerKiloOrUnit} = {product.productPricing.totalPrice}{" "}
-                </li>
-              ))}
-            </ul>
-          ),
+        Cell: ({ value }) => (
+          <ul>
+            {value.map((product, index) => (
+              <li key={index}>
+                {product.productPricing.product.name}:{product.productPricing.units * product.quantity} x{" "}
+                {product.productPricing.totalKilos * product.quantity} x{" "}
+                {product.productPricing.pricePerKiloOrUnit} = {product.productPricing.totalPrice}{" "}
+              </li>
+            ))}
+          </ul>
+        ),
       },
     ],
     []
   );
 
-  // Create the table instance
-
-  return <Table columns={columns} data={orders} />;
+  return (
+    <>
+      <input
+        type="date"
+        value={date}
+        onChange={(e) => {
+          setDate(e.target.value);
+        }}
+      />
+      <InvoicePrinter orders={orders} />
+      <Table columns={columns} data={orders} />
+    </>
+  );
 };
 
 export default OrdersTable;

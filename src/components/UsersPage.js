@@ -14,15 +14,12 @@ const UsersPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  console.log({ orders: users });
-
   // Fetch orders when the component mounts
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         const response = await fetch("http://localhost:5000/users", { method: "GET" }); // Replace with your API endpoint
         const data = await response.json();
-        console.log({ data });
 
         setUsers(data);
       } catch (error) {

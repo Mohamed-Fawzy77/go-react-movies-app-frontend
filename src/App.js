@@ -3,7 +3,7 @@ import Alert from "./components/Alert";
 import { useEffect, useState } from "react";
 import { capitalize } from "./utils/string";
 import axios from "axios";
-// import "./App.css";
+import "./App.css";
 
 function App() {
   const [alertMessage, setAlertMessage] = useState("");
@@ -74,11 +74,8 @@ function App() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch("http://localhost:5000/orders", { method: "GET" }); // Replace with your API endpoint
-        const data = await response.json();
-        console.log({ data });
-
-        setOrders(data.orders);
+        const res = await axios.get(`http://localhost:5000/orders`);
+        setOrders(res.data.orders);
       } catch (error) {
         console.log("error");
       }
@@ -116,53 +113,98 @@ function App() {
         <div className="col">
           <h1 className="mt-3 text-center">Delivery Souq Gomla</h1>
         </div>
-        <div className="col text-end">
+        <div className="col text-end mt-3">
+          <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav">
+                {jwt && (
+                  <>
+                    <li class="nav-item">
+                      <Link to="/" className="list-group-item list-group-item-action">
+                        <span className="badge bg-success">الصفحة الرئيسية</span>
+                      </Link>
+                    </li>
+                    <li class="nav-item">
+                      <Link to="/orders" className="list-group-item list-group-item-action">
+                        <span className="badge bg-success">الطلبات</span>
+                      </Link>
+                    </li>
+                    <li class="nav-item">
+                      <Link to="/create-order" className="list-group-item list-group-item-action">
+                        <span className="badge bg-success"> طلب جديد </span>
+                      </Link>
+                    </li>
+                    <li class="nav-item">
+                      <Link to="/sps" className="list-group-item list-group-item-action">
+                        <span className="badge bg-success"> المنتجات </span>
+                      </Link>
+                    </li>
+                    <li class="nav-item">
+                      <Link to="/users" className="list-group-item list-group-item-action">
+                        <span className="badge bg-success"> المستخدمين </span>
+                      </Link>
+                    </li>
+                  </>
+                )}
+                {jwt ? (
+                  <>
+                    <a href="#!">
+                      <span onClick={logout} className="badge bg-danger">
+                        logout
+                      </span>
+                    </a>
+                  </>
+                ) : (
+                  <Link to="/login">
+                    <span className="badge bg-success">login</span>
+                  </Link>
+                )}
+              </ul>
+            </div>
+          </nav>
+        </div>
+        {/* <div className="col text-end">
           {jwt ? (
-            <a href="#!">
-              <span onClick={logout} className="badge bg-danger">
-                logout
-              </span>
-            </a>
+            <>
+              <a href="#!">
+                <span onClick={logout} className="badge bg-danger">
+                  logout
+                </span>
+              </a>
+            </>
           ) : (
             <Link to="/login">
               <span className="badge bg-success">login</span>
             </Link>
           )}
-        </div>
-        <hr className="mb-3"></hr>
+          {jwt && (
+            <>
+              <Link to="/" className="list-group-item list-group-item-action">
+                <span className="badge bg-success">Home</span>
+              </Link>
+              <Link to="/orders" className="list-group-item list-group-item-action">
+                Orders
+              </Link>
+              <Link to="/print-orders" className="list-group-item list-group-item-action">
+                Print Orders
+              </Link>
+              <Link to="/create-order" className="list-group-item list-group-item-action">
+                Create Order
+              </Link>
+
+              <Link to="/sps" className="list-group-item list-group-item-action">
+                Standard Products
+              </Link>
+              <Link to="/users" className="list-group-item list-group-item-action">
+                users
+              </Link>
+            </>
+          )}
+        </div> */}
       </div>
 
       <div className="row">
-        <div className="col-md-2">
-          <nav>
-            <div className="list-group">
-              {jwt && (
-                <>
-                  <Link to="/" className="list-group-item list-group-item-action">
-                    Home
-                  </Link>
-                  <Link to="/orders" className="list-group-item list-group-item-action">
-                    Orders
-                  </Link>
-                  <Link to="/print-orders" className="list-group-item list-group-item-action">
-                    Print Orders
-                  </Link>
-                  <Link to="/create-order" className="list-group-item list-group-item-action">
-                    Create Order
-                  </Link>
-
-                  <Link to="/sps" className="list-group-item list-group-item-action">
-                    Standard Products
-                  </Link>
-                  <Link to="/users" className="list-group-item list-group-item-action">
-                    users
-                  </Link>
-                </>
-              )}
-            </div>
-          </nav>
-        </div>
-        <div className="col-md-10">
+        <div className="col-md-12">
           <Outlet
             context={{
               removeAlert,
