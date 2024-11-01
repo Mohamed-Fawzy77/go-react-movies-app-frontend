@@ -7,11 +7,13 @@ const ProductPricingButtons = () => {
   const [orderProducts, setOrderProducts] = useState([]);
   const [deliveryFee, setDeliveryFee] = useState(20); // Default to 20
   const [discount, setDiscount] = useState(0);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUserId, setSelectedUserId] = useState({});
   const [userSearch, setUserSearch] = useState("");
   const [deliveryDateOption, setDeliveryDateOption] = useState("today");
   const [customDeliveryDate, setCustomDeliveryDate] = useState("");
   const [selectedDeliveryAgent, setSelectedDeliveryAgent] = useState(null);
+
+  const user = users.find((user) => user._id === selectedUserId) || {};
 
   const PPMap = {};
 
@@ -71,14 +73,24 @@ const ProductPricingButtons = () => {
     `${user.phone} ${user.name} ${user.address}`.toLowerCase().includes(userSearch.toLowerCase())
   );
 
+  console.log({ deliveryDateOption, customDeliveryDate });
+  const deliveryDate =
+    deliveryDateOption === "today"
+      ? new Date(Date.now()).toISOString().slice(0, 10)
+      : deliveryDateOption === "tomorrow"
+      ? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
+      : new Date(customDeliveryDate || Date.now()).toISOString().slice(0, 10);
+
+  console.log({ deliveryDate });
+
   const handleCreateOrder = async () => {
     try {
-      const deliveryDate =
-        deliveryDateOption === "today"
-          ? new Date(Date.now()).toISOString().slice(0, 10)
-          : deliveryDateOption === "tomorrow"
-          ? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
-          : new Date(customDeliveryDate).toISOString().slice(0, 10);
+      // const deliveryDate =
+      //   deliveryDateOption === "today"
+      //     ? new Date(Date.now()).toISOString().slice(0, 10)
+      //     : deliveryDateOption === "tomorrow"
+      //     ? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
+      //     : new Date(customDeliveryDate || Date.now()).toISOString().slice(0, 10);
 
       await axios.post(
         "http://localhost:5000/orders",
@@ -86,7 +98,7 @@ const ProductPricingButtons = () => {
           orderProducts: orderProducts,
           deliveryFee: parseInt(deliveryFee),
           discount: parseInt(discount),
-          buyer: selectedUser,
+          buyer: selectedUserId,
           deliveryAgent: selectedDeliveryAgent,
           deliveryDate,
         },
@@ -100,9 +112,9 @@ const ProductPricingButtons = () => {
       setOrderProducts([]);
       setDeliveryFee(20);
       setDiscount(0);
-      setSelectedUser(null);
+      setSelectedUserId({});
       setSelectedDeliveryAgent(null);
-      setDeliveryDateOption("today");
+      // setDeliveryDateOption("today");
       setCustomDeliveryDate("");
       removeAlert();
       removeAlert("Order created successfully");
@@ -195,10 +207,10 @@ const ProductPricingButtons = () => {
             style={{ width: "100%", padding: "8px", marginBottom: "10px" }}
           />
           <select
-            value={selectedUser}
+            value={selectedUserId}
             onChange={(e) => {
               console.log({ value: e.target.value });
-              setSelectedUser(e.target.value);
+              setSelectedUserId(e.target.value);
             }}
             // onClick={(e) => {
             //   console.log({ value: e.target.value });
@@ -272,25 +284,27 @@ const ProductPricingButtons = () => {
       <hr />
 
       {/* Product Buttons */}
-      <div style={{ display: "flex", marginRight: "300px" }}>
-        <div style={{ flex: 3 }}>
-          {data.map((item) => (
-            <div key={item._id}>
-              <h3>{item.name}</h3>
-              {item.products.map((product) => (
-                <div key={product._id}>
-                  <h4>{product.name}</h4>
-                  {product.productPricings.map((PP) => (
+      <div style={{ display: "flex", marginRight: "200px", flexWrap: "wrap", border: "1px solid #ccc" }}>
+        {/* <div style={{ flex: 3 }}> */}
+        {data.map((item) => (
+          <div key={item._id} style={{ minWidth: "250px", marginBottom: "50px" }}>
+            <h3>{item.name}</h3>
+            {item.products.map((product) => (
+              <div key={product._id}>
+                <h4>{product.name}</h4>
+                {product.productPricings.map((PP) => (
+                  <>
                     <button key={PP._id} onClick={() => addToOrder(PP, product.name)}>
                       {PP.units} x {PP.totalKilos || "-"} x {PP.pricePerKiloOrUnit || "-"} = {PP.totalPrice}
                     </button>
-                  ))}
-                </div>
-              ))}
-              <hr />
-            </div>
-          ))}
-        </div>
+                    <br />
+                  </>
+                ))}
+              </div>
+            ))}
+          </div>
+        ))}
+        {/* </div> */}
 
         {/* Fixed Order Summary */}
         <div
@@ -301,7 +315,7 @@ const ProductPricingButtons = () => {
             padding: "10px",
             border: "1px solid #ccc",
             borderRadius: "8px",
-            width: "300px",
+            width: "350px",
             backgroundColor: "#f9f9f9",
           }}
         >
@@ -323,11 +337,14 @@ const ProductPricingButtons = () => {
           </ul>
           <hr />
           <h4>Total Cost : {calculateTotalCost()}</h4>
+          <button style={{ width: "100%", height: "50px" }} onClick={handleCreateOrder}>
+            Create Order
+          </button>
+          order Date : {deliveryDateOption}({deliveryDate}) <br /> buyer name: {user.name || "-"} <br />
+          buyer phone: {user.phone || "-"} <br />
+          buyer id: {user._id || "-"} <br />
         </div>
       </div>
-      <button style={{ width: "100%", marginBottom: "50px", height: "50px" }} onClick={handleCreateOrder}>
-        Create Order
-      </button>
     </div>
   );
 };
