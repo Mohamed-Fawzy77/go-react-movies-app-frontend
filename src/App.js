@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { capitalize } from "./utils/string";
 import axios from "axios";
 import "./App.css";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [alertMessage, setAlertMessage] = useState("");
@@ -220,6 +222,8 @@ function App() {
           />
         </div>
       </div>
+      <ToastContainer autoClose={2000} theme="colored" />
+      <ToastContainer autoClose={2000} theme="colored" />
     </div>
   );
 }

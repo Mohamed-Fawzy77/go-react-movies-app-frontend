@@ -10,9 +10,7 @@ const StatusMapper = {
   6: "Cancelled",
 };
 
-const OrdersTable = ({ deliveryAgents }) => {
-  console.log({ deliveryAgents });
-
+const OrdersPage = ({ deliveryAgents }) => {
   const [orders, setOrders] = useState([]);
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10).toString());
 
@@ -34,35 +32,39 @@ const OrdersTable = ({ deliveryAgents }) => {
     () => [
       {
         Header: "Buyer Name",
-        accessor: (item) => item.buyer.name, // accessor is the "key" in the data
+        accessor: (order) => order.buyer.name, // accessor is the "key" in the data
       },
       {
         Header: "Buyer Phone",
-        accessor: (item) => item.buyer.phone,
+        accessor: (order) => order.buyer.phone,
       },
       {
         Header: "Address",
-        accessor: (item) => item.address,
+        accessor: (order) => order.address,
       },
       {
         Header: "Total Cost",
-        accessor: (item) => item.orderTotalPriceAfterDiscount,
+        accessor: (order) => order.orderTotalPriceAfterDiscount,
       },
-      {
-        Header: "Delivery Fee",
-        accessor: (item) => item.deliveryFee,
-      },
+      // {
+      //   Header: "Delivery Fee",
+      //   accessor: (order) => order.deliveryFee,
+      // },
       {
         Header: "Delivery Agent",
-        accessor: (item) => item.deliveryAgent?.name || "Not Assigned",
+        accessor: (order) => order.deliveryAgent?.name || "Not Assigned",
       },
       {
-        Header: "Status",
-        accessor: (item) => StatusMapper[item.status],
+        Header: "notes",
+        accessor: (order) => order.notes,
       },
+      // {
+      //   Header: "Status",
+      //   accessor: (order) => StatusMapper[order.status],
+      // },
       {
         Header: "products",
-        accessor: (item) => item.orderProducts,
+        accessor: (order) => order.orderProducts,
         minWidth: "400px",
         Cell: ({ value }) => (
           <ul>
@@ -80,6 +82,8 @@ const OrdersTable = ({ deliveryAgents }) => {
     []
   );
 
+  const totalCost = orders.reduce((acc, order) => acc + order.orderTotalPriceAfterDiscount, 0);
+
   return (
     <>
       <input
@@ -89,10 +93,11 @@ const OrdersTable = ({ deliveryAgents }) => {
           setDate(e.target.value);
         }}
       />
+      <h3>Total: {totalCost}</h3>
       <InvoicePrinter orders={orders} />
       <Table columns={columns} data={orders} />
     </>
   );
 };
 
-export default OrdersTable;
+export default OrdersPage;

@@ -1,20 +1,41 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import Modal from "./components/Modal";
+// import Modal from "./components/Modal";
+import Modal from "react-modal";
+import AddUserForm from "./components/AddUserForm";
+import { toast } from "react-toastify";
+Modal.setAppElement("#root");
 
 const ProductPricingButtons = () => {
   const { users, data, deliveryAgents, removeAlert, setDangerAlert, jwt } = useOutletContext();
   const [orderProducts, setOrderProducts] = useState([]);
   const [deliveryFee, setDeliveryFee] = useState(20); // Default to 20
   const [discount, setDiscount] = useState(0);
-  const [selectedUserId, setSelectedUserId] = useState({});
+  const [selectedUserId, setSelectedUserId] = useState(null);
   const [userSearch, setUserSearch] = useState("");
   const [deliveryDateOption, setDeliveryDateOption] = useState("today");
   const [customDeliveryDate, setCustomDeliveryDate] = useState("");
   const [selectedDeliveryAgent, setSelectedDeliveryAgent] = useState(null);
+  const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
+  const [isUpdateUserModalOpen, setIsUpdateUserModalOpen] = useState(false);
+  const [stateUser, setStateUser] = useState({});
+  const [notes, setNotes] = useState("");
+
+  const notify = () => toast.error("Wow so easy!", { theme: "dark" });
+
+  const handleNotesChange = (e) => {
+    setNotes(e.target.value);
+  };
 
   const user = users.find((user) => user._id === selectedUserId) || {};
+
+  const finalUser = stateUser || user;
+
+  const UserAdded = (user) => {
+    setSelectedUserId(user._id);
+    setStateUser(user);
+  };
 
   const PPMap = {};
 
@@ -102,6 +123,7 @@ const ProductPricingButtons = () => {
           buyer: selectedUserId,
           deliveryAgent: selectedDeliveryAgent === "None" ? null : selectedDeliveryAgent,
           deliveryDate,
+          notes,
         },
         {
           headers: {
@@ -115,8 +137,8 @@ const ProductPricingButtons = () => {
       setDiscount(0);
       setSelectedUserId({});
       setSelectedDeliveryAgent(null);
-      // setDeliveryDateOption("today");
       setCustomDeliveryDate("");
+      setNotes("");
       removeAlert();
       removeAlert("Order created successfully");
     } catch (error) {
@@ -222,8 +244,9 @@ const ProductPricingButtons = () => {
               </option>
             ))}
           </select>
-          <button>اضافة مستخدم</button>
-          <Modal />
+          <button onClick={() => setIsAddUserModalOpen(true)}>اضافة مستخدم</button>
+          <button onClick={() => setIsUpdateUserModalOpen(true)}>تعديل مستخدم</button>
+          <button onClick={notify}>Notify!</button>
         </div>
 
         {/* Delivery Fee */}
@@ -266,6 +289,14 @@ const ProductPricingButtons = () => {
               style={{ marginLeft: "5px", width: "60px" }}
             />
           </label>
+          <br />
+          <label>Notes:</label> <br />
+          <textarea
+            name="notes"
+            value={notes}
+            onChange={handleNotesChange}
+            style={{ height: "50px", width: "200px" }}
+          />
         </div>
 
         {/* Discount */}
@@ -341,11 +372,51 @@ const ProductPricingButtons = () => {
             اضافة الطلب
           </button>
           تاريخ التسليم : {deliveryDateOption}({deliveryDate})<br />
-          اسم المشترى: {user.name || "-"} <br />
-          رقم الهاتف: {user.phone || "-"} <br />
-          الاى دى: {user._id || "-"} <br />
+          اسم المشترى: {finalUser.name || "-"} <br />
+          رقم الهاتف: {finalUser.phone || "-"} <br />
+          الاى دى: {finalUser._id || "-"} <br />
         </div>
       </div>
+
+      <Modal
+        isOpen={isAddUserModalOpen}
+        onRequestClose={() => setIsAddUserModalOpen(false)} // Closes the modal when clicking outside or pressing "Escape"
+        contentLabel="Example Modal"
+        style={{
+          content: {
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+          },
+        }}
+      >
+        <h2>اضافة مستخدم</h2>
+        <AddUserForm UserAdded={UserAdded} />
+        <button onClick={() => setIsAddUserModalOpen(false)}>اغلاق</button>
+      </Modal>
+
+      <Modal
+        isOpen={isUpdateUserModalOpen}
+        onRequestClose={() => setIsUpdateUserModalOpen(false)} // Closes the modal when clicking outside or pressing "Escape"
+        contentLabel="Example Modal"
+        style={{
+          content: {
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+          },
+        }}
+      >
+        <h2>تعديل المستخدم</h2>
+        <AddUserForm UserAdded={UserAdded} toBeUpdatedUser={user} />
+        <button onClick={() => setIsUpdateUserModalOpen(false)}>اغلاق</button>
+      </Modal>
     </div>
   );
 };

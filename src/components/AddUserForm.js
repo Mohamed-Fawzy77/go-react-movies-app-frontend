@@ -7,15 +7,15 @@ const UserType = {
   BUYER: "buyer",
 };
 
-const AddUserForm = () => {
+const AddUserForm = ({ UserAdded, toBeUpdatedUser }) => {
+  const userInfo = toBeUpdatedUser || {};
   const [userData, setUserData] = useState({
-    phone: "",
-    password: "",
-    name: "",
-    address: "",
-    notes: "",
-    isVerified: false,
-    type: UserType.BUYER,
+    phone: userInfo.phone || "",
+    name: userInfo.name || "",
+    address: userInfo.address || "",
+    notes: userInfo.notes || "",
+    isVerified: userInfo.isVerified || false,
+    type: userInfo.type || UserType.BUYER,
   });
 
   const handleInputChange = (e) => {
@@ -29,7 +29,16 @@ const AddUserForm = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/users", userData);
+      if (toBeUpdatedUser) {
+        const updatedUser = await axios.put(`http://localhost:5000/users/${toBeUpdatedUser._id}`, userData);
+        alert("User updated successfully!");
+        if (UserAdded) {
+          UserAdded(updatedUser.data);
+        }
+        return;
+      }
+
+      const addedUser = await axios.post("http://localhost:5000/users", userData);
       setUserData({
         phone: "",
         name: "",
@@ -39,6 +48,9 @@ const AddUserForm = () => {
         type: UserType.BUYER,
       });
       alert("User added successfully!");
+      if (UserAdded) {
+        UserAdded(addedUser.data);
+      }
     } catch (error) {
       console.error("Error adding user:", error);
       alert("Failed to add user.");
@@ -50,27 +62,59 @@ const AddUserForm = () => {
       <form onSubmit={handleFormSubmit}>
         <div>
           <label>Phone:</label>
-          <input type="text" name="phone" value={userData.phone} onChange={handleInputChange} required />
+          <input
+            className="mb-3"
+            type="text"
+            name="phone"
+            value={userData.phone}
+            onChange={handleInputChange}
+            required
+          />
         </div>
 
         <div>
           <label>Name:</label>
-          <input type="text" name="name" value={userData.name} onChange={handleInputChange} required />
+          <input
+            className="mb-3"
+            style={{ width: "500px" }}
+            type="text"
+            name="name"
+            value={userData.name}
+            onChange={handleInputChange}
+            required
+          />
         </div>
 
         <div>
           <label>Address:</label>
-          <input type="text" name="address" value={userData.address} onChange={handleInputChange} required />
+          <textarea
+            // className="mb-3"
+            name="address"
+            value={userData.address}
+            onChange={handleInputChange}
+            required
+            style={{ height: "100px", width: "500px" }}
+          />
         </div>
 
         <div>
           <label>Notes:</label>
-          <textarea name="notes" value={userData.notes} onChange={handleInputChange} />
+          <textarea
+            name="notes"
+            value={userData.notes}
+            onChange={handleInputChange}
+            style={{ height: "100px", width: "500px" }}
+          />
         </div>
 
         <div>
           <label>Is Verified:</label>
-          <input type="checkbox" name="isVerified" checked={userData.isVerified} onChange={handleInputChange} />
+          <input
+            type="checkbox"
+            name="isVerified"
+            checked={userData.isVerified}
+            onChange={handleInputChange}
+          />
         </div>
 
         <div>
@@ -82,7 +126,7 @@ const AddUserForm = () => {
           </select>
         </div>
 
-        <button type="submit">Add User</button>
+        <button type="submit">{toBeUpdatedUser ? "Update User" : "Add User"}</button>
       </form>
     </>
   );

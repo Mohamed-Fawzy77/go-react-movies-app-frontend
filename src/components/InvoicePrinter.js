@@ -1,7 +1,7 @@
 // InvoicePrinter.js
 import React, { useRef } from "react";
 import Invoice from "./Invoice";
-
+const amountPattern = /\d+(ك|ج)$/;
 const InvoicePrinter = ({ orders }) => {
   const printRef = useRef();
   const allPPRef = useRef();
@@ -157,19 +157,27 @@ margin: 0;}
 
       <div ref={allPPRef} style={{ display: "none" }}>
         <ul style={{ direction: "rtl", fontSize: "30px" }}>
-          {orderProducts.map((orderProduct, index) => {
-            const PP = orderProduct.productPricing;
-            return (
-              <div>
-                <div key={index}>
-                  {PP.product.name} : {orderProduct.quantity}
-                  {/* 
+          {orderProducts
+            .sort((a, b) => a.productPricing.product.name.localeCompare(b.productPricing.product.name))
+            .map((orderProduct, index) => {
+              const PP = orderProduct.productPricing;
+              return (
+                <div>
+                  <div key={index}>
+                    {PP.product.name +
+                      (amountPattern.test(PP.product.name)
+                        ? ""
+                        : PP.totalKilos
+                        ? "(" + PP.totalKilos + "ك" + ")"
+                        : "(" + PP.totalPrice + "ج" + ")")}
+                    :{orderProduct.quantity}
+                    {/* 
                   * ({PP.units || "-"} * {PP.totalKilos || "-"} *{" "}
                     {PP.pricePerKiloOrUnit || "-"} = {PP.totalPrice || "-"}) */}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
         </ul>
       </div>
 
