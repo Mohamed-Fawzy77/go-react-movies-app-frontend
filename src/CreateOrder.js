@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useOutletContext } from "react-router-dom";
+import Modal from "./components/Modal";
 
 const ProductPricingButtons = () => {
   const { users, data, deliveryAgents, removeAlert, setDangerAlert, jwt } = useOutletContext();
@@ -99,7 +100,7 @@ const ProductPricingButtons = () => {
           deliveryFee: parseInt(deliveryFee),
           discount: parseInt(discount),
           buyer: selectedUserId,
-          deliveryAgent: selectedDeliveryAgent,
+          deliveryAgent: selectedDeliveryAgent === "None" ? null : selectedDeliveryAgent,
           deliveryDate,
         },
         {
@@ -139,7 +140,7 @@ const ProductPricingButtons = () => {
             onChange={(e) => setSelectedDeliveryAgent(e.target.value)}
             style={{ width: "100%", padding: "8px" }}
           >
-            <option value="None">Select a delivery agent</option>
+            <option value={"None"}>Select a delivery agent</option>
             {deliveryAgents.map((agent) => (
               <option key={agent._id} value={agent._id}>
                 {agent.name}
@@ -212,10 +213,6 @@ const ProductPricingButtons = () => {
               console.log({ value: e.target.value });
               setSelectedUserId(e.target.value);
             }}
-            // onClick={(e) => {
-            //   console.log({ value: e.target.value });
-            //   setSelectedUser(e.target.value);
-            // }}
             style={{ width: "100%", padding: "8px" }}
           >
             <option value="">Select a user</option>
@@ -225,6 +222,8 @@ const ProductPricingButtons = () => {
               </option>
             ))}
           </select>
+          <button>اضافة مستخدم</button>
+          <Modal />
         </div>
 
         {/* Delivery Fee */}
@@ -317,6 +316,7 @@ const ProductPricingButtons = () => {
             borderRadius: "8px",
             width: "350px",
             backgroundColor: "#f9f9f9",
+            direction: "rtl",
           }}
         >
           <h3>Order Products:</h3>
@@ -326,23 +326,24 @@ const ProductPricingButtons = () => {
               const PP = PPMap[_id];
               return (
                 <li key={index}>
-                  {PP.productName}: {PP.units * quantity} x {PP.totalKilos * quantity || "-"} x{" "}
+                  {PP.productName}: {PP.units * quantity} * {PP.totalKilos * quantity || "-"} *{" "}
                   {PP.pricePerKiloOrUnit || "-"} = {PP.totalPrice * quantity}
                 </li>
               );
             })}
 
-            {deliveryFee > 0 && <li>Delivery: {deliveryFee}</li>}
-            {discount > 0 && <li>Discount: {discount}</li>}
+            {deliveryFee > 0 && <li>توصيل: {deliveryFee}</li>}
+            {discount > 0 && <li>خصم: {discount}</li>}
           </ul>
           <hr />
-          <h4>Total Cost : {calculateTotalCost()}</h4>
+          <h4>الاجمالى : {calculateTotalCost()}</h4>
           <button style={{ width: "100%", height: "50px" }} onClick={handleCreateOrder}>
-            Create Order
+            اضافة الطلب
           </button>
-          order Date : {deliveryDateOption}({deliveryDate}) <br /> buyer name: {user.name || "-"} <br />
-          buyer phone: {user.phone || "-"} <br />
-          buyer id: {user._id || "-"} <br />
+          تاريخ التسليم : {deliveryDateOption}({deliveryDate})<br />
+          اسم المشترى: {user.name || "-"} <br />
+          رقم الهاتف: {user.phone || "-"} <br />
+          الاى دى: {user._id || "-"} <br />
         </div>
       </div>
     </div>
