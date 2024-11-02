@@ -12,6 +12,7 @@ import Movie from "./components/Movie";
 import StandardProductDetails from "./components/StandardProductDetails";
 import ProductDetails from "./components/ProductDetails";
 import UsersPage from "./components/UsersPage";
+import UpdateOrder from "./components/UpdateOrder";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
       {
         path: "/create-order",
         element: <CreateOrder />,
+      },
+      {
+        path: "/order/:id",
+        element: <UpdateOrder />,
       },
       {
         path: "/sps",

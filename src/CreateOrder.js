@@ -29,8 +29,9 @@ const ProductPricingButtons = () => {
   };
 
   const user = users.find((user) => user._id === selectedUserId) || {};
+  console.log({ user });
 
-  const finalUser = stateUser || user;
+  const finalUser = Object.keys(stateUser).length ? stateUser : user;
 
   const UserAdded = (user) => {
     setSelectedUserId(user._id);
@@ -246,7 +247,7 @@ const ProductPricingButtons = () => {
           </select>
           <button onClick={() => setIsAddUserModalOpen(true)}>اضافة مستخدم</button>
           <button onClick={() => setIsUpdateUserModalOpen(true)}>تعديل مستخدم</button>
-          <button onClick={notify}>Notify!</button>
+          <button onClick={notify}>Notisfy!</button>
         </div>
 
         {/* Delivery Fee */}
@@ -373,6 +374,7 @@ const ProductPricingButtons = () => {
           </button>
           تاريخ التسليم : {deliveryDateOption}({deliveryDate})<br />
           اسم المشترى: {finalUser.name || "-"} <br />
+          عنوان المشترى: {finalUser.address || "-"} <br />
           رقم الهاتف: {finalUser.phone || "-"} <br />
           الاى دى: {finalUser._id || "-"} <br />
         </div>

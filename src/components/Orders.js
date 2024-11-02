@@ -3,6 +3,7 @@ import { useReactTable, getCoreRowModel, getSortedRowModel } from "@tanstack/rea
 import Table from "./Table";
 import axios from "axios";
 import InvoicePrinter from "./InvoicePrinter";
+import Modal from "react-modal";
 
 const StatusMapper = {
   1: "Pending",
@@ -12,6 +13,7 @@ const StatusMapper = {
 
 const OrdersPage = ({ deliveryAgents }) => {
   const [orders, setOrders] = useState([]);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10).toString());
 
   useEffect(() => {
@@ -77,6 +79,23 @@ const OrdersPage = ({ deliveryAgents }) => {
             ))}
           </ul>
         ),
+      },
+      {
+        Header: "Actions",
+        accessor: (order) => order,
+        Cell: ({ value }) => {
+          return (
+            <>
+              <button
+                onClick={() => {
+                  window.open("/order/" + value._id, "_blank");
+                }}
+              >
+                تعديل
+              </button>
+            </>
+          );
+        },
       },
     ],
     []

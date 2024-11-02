@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const UserType = {
   ADMIN: "admin",
@@ -47,10 +48,11 @@ const AddUserForm = ({ UserAdded, toBeUpdatedUser }) => {
         isVerified: false,
         type: UserType.BUYER,
       });
-      alert("User added successfully!");
       if (UserAdded) {
         UserAdded(addedUser.data);
       }
+
+      toast.success("اشطة تمت الإضافة بنجاح");
     } catch (error) {
       console.error("Error adding user:", error);
       alert("Failed to add user.");
