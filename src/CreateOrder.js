@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 Modal.setAppElement("#root");
 
 const ProductPricingButtons = () => {
-  const { users, data, deliveryAgents, removeAlert, setDangerAlert, jwt } = useOutletContext();
+  const { users, data: PPs, deliveryAgents, removeAlert, setDangerAlert, jwt } = useOutletContext();
   const [orderProducts, setOrderProducts] = useState([]);
   const [deliveryFee, setDeliveryFee] = useState(20); // Default to 20
   const [discount, setDiscount] = useState(0);
@@ -29,7 +29,6 @@ const ProductPricingButtons = () => {
   };
 
   const user = users.find((user) => user._id === selectedUserId) || {};
-  console.log({ user });
 
   const finalUser = Object.keys(stateUser).length ? stateUser : user;
 
@@ -40,7 +39,7 @@ const ProductPricingButtons = () => {
 
   const PPMap = {};
 
-  for (const SP of data) {
+  for (const SP of PPs) {
     for (const product of SP.products) {
       for (const PP of product.productPricings) {
         PP.productName = product.name;
@@ -49,19 +48,52 @@ const ProductPricingButtons = () => {
     }
   }
 
-  const addToOrder = (productPricing, productName) => {
-    setOrderProducts((prevOrder) => {
-      const existingIndex = prevOrder.findIndex((orderProduct) => orderProduct._id === productPricing._id);
+  const removeFromOrder = (productPricing) => {
+    setOrderProducts((prevOrderProducts) => {
+      const productPricingId = productPricing._id || productPricing;
+
+      const existingIndex = prevOrderProducts.findIndex(
+        (orderProduct) => orderProduct.productPricing === productPricingId
+      );
 
       if (existingIndex !== -1) {
-        const firstPart = prevOrder.slice(0, existingIndex);
-        const secondPart = prevOrder.slice(existingIndex + 1);
+        const firstPart = prevOrderProducts.slice(0, existingIndex);
+        const secondPart = prevOrderProducts.slice(existingIndex + 1);
+
+        if (prevOrderProducts[existingIndex].quantity === 1) {
+          const updatedOrder = [...firstPart, ...secondPart];
+          return updatedOrder;
+        } else {
+          const updatedOrder = [
+            ...firstPart,
+            {
+              ...prevOrderProducts[existingIndex],
+              quantity: prevOrderProducts[existingIndex].quantity - 1,
+            },
+            ...secondPart,
+          ];
+          return updatedOrder;
+        }
+      } else {
+        toast.error("Product not found in order");
+      }
+    });
+  };
+  const addToOrder = (productPricing) => {
+    setOrderProducts((prevOrderProducts) => {
+      const existingIndex = prevOrderProducts.findIndex(
+        (orderProduct) => orderProduct.productPricing === productPricing._id
+      );
+
+      if (existingIndex !== -1) {
+        const firstPart = prevOrderProducts.slice(0, existingIndex);
+        const secondPart = prevOrderProducts.slice(existingIndex + 1);
 
         const updatedOrder = [
           ...firstPart,
           {
-            ...prevOrder[existingIndex],
-            quantity: prevOrder[existingIndex].quantity + 1,
+            ...prevOrderProducts[existingIndex],
+            quantity: prevOrderProducts[existingIndex].quantity + 1,
           },
           ...secondPart,
         ];
@@ -70,10 +102,9 @@ const ProductPricingButtons = () => {
       } else {
         // Add new product pricing entry with initial values
         return [
-          ...prevOrder,
+          ...prevOrderProducts,
           {
             quantity: 1,
-            _id: productPricing._id,
             productPricing: productPricing._id,
           },
         ];
@@ -85,7 +116,7 @@ const ProductPricingButtons = () => {
     let totalCost = 0;
 
     for (const orderProduct of orderProducts) {
-      const productPricing = PPMap[orderProduct._id];
+      const productPricing = PPMap[orderProduct.productPricing];
       totalCost += productPricing.totalPrice * orderProduct.quantity;
     }
 
@@ -96,7 +127,6 @@ const ProductPricingButtons = () => {
     `${user.phone} ${user.name} ${user.address}`.toLowerCase().includes(userSearch.toLowerCase())
   );
 
-  console.log({ deliveryDateOption, customDeliveryDate });
   const deliveryDate =
     deliveryDateOption === "today"
       ? new Date(Date.now()).toISOString().slice(0, 10)
@@ -104,16 +134,12 @@ const ProductPricingButtons = () => {
       ? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
       : new Date(customDeliveryDate || Date.now()).toISOString().slice(0, 10);
 
-  console.log({ deliveryDate });
-
   const handleCreateOrder = async () => {
     try {
-      // const deliveryDate =
-      //   deliveryDateOption === "today"
-      //     ? new Date(Date.now()).toISOString().slice(0, 10)
-      //     : deliveryDateOption === "tomorrow"
-      //     ? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
-      //     : new Date(customDeliveryDate || Date.now()).toISOString().slice(0, 10);
+      if (!selectedUserId) {
+        toast.error("Please select a user");
+        return;
+      }
 
       await axios.post(
         "http://localhost:5000/orders",
@@ -140,11 +166,9 @@ const ProductPricingButtons = () => {
       setSelectedDeliveryAgent(null);
       setCustomDeliveryDate("");
       setNotes("");
-      removeAlert();
-      removeAlert("Order created successfully");
+      toast.success("Order created successfully");
     } catch (error) {
-      console.error({ error });
-      setDangerAlert("Error creating order " + error.message);
+      toast.error("Error Creating Order");
       console.error("Error creating order:", error);
     }
   };
@@ -152,9 +176,6 @@ const ProductPricingButtons = () => {
   return (
     <div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
-        {/* User Selection */}
-        {/* <div style={{ flex: 1 }}>User input and select</div> */}
-
         {/* Delivery Agent Selection */}
         <div style={{ flex: 1 }}>
           <h4>Select Delivery Agent:</h4>
@@ -233,7 +254,6 @@ const ProductPricingButtons = () => {
           <select
             value={selectedUserId}
             onChange={(e) => {
-              console.log({ value: e.target.value });
               setSelectedUserId(e.target.value);
             }}
             style={{ width: "100%", padding: "8px" }}
@@ -317,7 +337,7 @@ const ProductPricingButtons = () => {
       {/* Product Buttons */}
       <div style={{ display: "flex", marginRight: "200px", flexWrap: "wrap", border: "1px solid #ccc" }}>
         {/* <div style={{ flex: 3 }}> */}
-        {data.map((item) => (
+        {PPs.map((item) => (
           <div key={item._id} style={{ minWidth: "250px", marginBottom: "50px" }}>
             <h3>{item.name}</h3>
             {item.products.map((product) => (
@@ -325,7 +345,7 @@ const ProductPricingButtons = () => {
                 <h4>{product.name}</h4>
                 {product.productPricings.map((PP) => (
                   <>
-                    <button key={PP._id} onClick={() => addToOrder(PP, product.name)}>
+                    <button key={PP._id} onClick={() => addToOrder(PP)}>
                       {PP.units} x {PP.totalKilos || "-"} x {PP.pricePerKiloOrUnit || "-"} = {PP.totalPrice}
                     </button>
                     <br />
@@ -354,12 +374,14 @@ const ProductPricingButtons = () => {
           <h3>Order Products:</h3>
           <ul>
             {orderProducts.map((orderProduct, index) => {
-              const { _id, quantity } = orderProduct;
-              const PP = PPMap[_id];
+              const { productPricing: productPricingId, quantity } = orderProduct;
+              const PP = PPMap[productPricingId];
               return (
                 <li key={index}>
                   {PP.productName}: {PP.units * quantity} * {PP.totalKilos * quantity || "-"} *{" "}
                   {PP.pricePerKiloOrUnit || "-"} = {PP.totalPrice * quantity}
+                  <button onClick={() => addToOrder(PP)}>+</button>
+                  <button onClick={() => removeFromOrder(PP)}>-</button>
                 </li>
               );
             })}
