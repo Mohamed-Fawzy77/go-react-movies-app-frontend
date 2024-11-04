@@ -1,16 +1,16 @@
 import axios from "axios";
-import React, { useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useOutletContext, useParams } from "react-router-dom";
 // import Modal from "./components/Modal";
 import Modal from "react-modal";
 import AddUserForm from "./components/AddUserForm";
 import { toast } from "react-toastify";
 Modal.setAppElement("#root");
 
-const ProductPricingButtons = () => {
-  const { users, data: PPs, deliveryAgents, removeAlert, setDangerAlert, jwt } = useOutletContext();
+const CreateOrder = () => {
+  const { users, data: PPs, deliveryAgents, jwt } = useOutletContext();
   const [orderProducts, setOrderProducts] = useState([]);
-  const [deliveryFee, setDeliveryFee] = useState(20); // Default to 20
+  const [deliveryFee, setDeliveryFee] = useState(20);
   const [discount, setDiscount] = useState(0);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [userSearch, setUserSearch] = useState("");
@@ -21,12 +21,63 @@ const ProductPricingButtons = () => {
   const [isUpdateUserModalOpen, setIsUpdateUserModalOpen] = useState(false);
   const [stateUser, setStateUser] = useState({});
   const [notes, setNotes] = useState("");
+  const { id } = useParams();
 
-  const notify = () => toast.error("Wow so easy!", { theme: "dark" });
+  const isUpdating = !!id;
 
-  const handleNotesChange = (e) => {
-    setNotes(e.target.value);
-  };
+  useEffect(() => {
+    const fetchOrder = async () => {
+      try {
+        if (!id) {
+          return;
+        }
+
+        const res = await axios.get(`http://localhost:5000/orders/${id}`);
+
+        const order = res.data;
+        console.log({ order });
+
+        const orderProducts = [];
+
+        for (const orderProduct of order.orderProducts) {
+          const PPId = orderProduct.productPricing._id || orderProduct.productPricing;
+          orderProducts.push({
+            _id: orderProduct._id,
+            quantity: orderProduct.quantity,
+            productPricing: PPId,
+          });
+        }
+
+        const buyerId = order.buyer._id || order.buyer;
+
+        setOrderProducts(orderProducts);
+        setDeliveryFee(order.deliveryFee);
+        setDiscount(order.discount);
+        setSelectedUserId(buyerId);
+        setSelectedDeliveryAgent(order.deliveryAgent);
+        setDeliveryDateOption(order.deliveryDate);
+        setCustomDeliveryDate(order.deliveryDate);
+        setNotes(order.notes);
+
+        const isDeliveryDayToday = new Date(order.deliveryDate).toDateString() === new Date().toDateString();
+        const isDeliveryDayTomorrow =
+          new Date(order.deliveryDate).toDateString() ===
+          new Date(Date.now() + 24 * 60 * 60 * 1000).toDateString();
+        if (isDeliveryDayToday) {
+          setDeliveryDateOption("today");
+        } else if (isDeliveryDayTomorrow) {
+          setDeliveryDateOption("tomorrow");
+        } else {
+          setDeliveryDateOption("custom");
+        }
+      } catch (error) {
+        toast.error("Error fetching order");
+        console.error("error", error);
+      }
+    };
+
+    fetchOrder();
+  }, []);
 
   const user = users.find((user) => user._id === selectedUserId) || {};
 
@@ -134,39 +185,71 @@ const ProductPricingButtons = () => {
       ? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
       : new Date(customDeliveryDate || Date.now()).toISOString().slice(0, 10);
 
-  const handleCreateOrder = async () => {
+  const handleCreateOrUpdateOrder = async () => {
     try {
       if (!selectedUserId) {
         toast.error("Please select a user");
         return;
       }
 
-      await axios.post(
-        "http://localhost:5000/orders",
-        {
-          orderProducts: orderProducts,
-          deliveryFee: parseInt(deliveryFee),
-          discount: parseInt(discount),
-          buyer: selectedUserId,
-          deliveryAgent: selectedDeliveryAgent === "None" ? null : selectedDeliveryAgent,
-          deliveryDate,
-          notes,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-          },
-        }
-      );
+      if (orderProducts.length === 0) {
+        toast.error("Please add products to the order");
+        return;
+      }
 
-      setOrderProducts([]);
-      setDeliveryFee(20);
-      setDiscount(0);
-      setSelectedUserId({});
-      setSelectedDeliveryAgent(null);
-      setCustomDeliveryDate("");
-      setNotes("");
-      toast.success("Order created successfully");
+      if (isUpdating) {
+        try {
+          await axios.put(
+            `http://localhost:5000/orders/${id}`,
+            {
+              orderProducts: orderProducts,
+              deliveryFee: parseInt(deliveryFee),
+              discount: parseInt(discount),
+              buyer: selectedUserId,
+              deliveryAgent: selectedDeliveryAgent === "None" ? null : selectedDeliveryAgent,
+              deliveryDate,
+              notes,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${jwt}`,
+              },
+            }
+          );
+
+          toast.success("تم تحديث الطلب بنجاح");
+        } catch (error) {
+          toast.error("Error Updating Order");
+          console.error("Error updating order:", error);
+        }
+      } else {
+        await axios.post(
+          "http://localhost:5000/orders",
+          {
+            orderProducts: orderProducts,
+            deliveryFee: parseInt(deliveryFee),
+            discount: parseInt(discount),
+            buyer: selectedUserId,
+            deliveryAgent: selectedDeliveryAgent === "None" ? null : selectedDeliveryAgent,
+            deliveryDate,
+            notes,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${jwt}`,
+            },
+          }
+        );
+
+        setOrderProducts([]);
+        setDeliveryFee(20);
+        setDiscount(0);
+        setSelectedUserId({});
+        setSelectedDeliveryAgent(null);
+        setCustomDeliveryDate("");
+        setNotes("");
+        toast.success("تم انشاء الطلب بنجاح");
+      }
     } catch (error) {
       toast.error("Error Creating Order");
       console.error("Error creating order:", error);
@@ -185,8 +268,8 @@ const ProductPricingButtons = () => {
             style={{ width: "100%", padding: "8px" }}
           >
             <option value={"None"}>Select a delivery agent</option>
-            {deliveryAgents.map((agent) => (
-              <option key={agent._id} value={agent._id}>
+            {deliveryAgents.map((agent, index) => (
+              <option key={index} value={agent._id}>
                 {agent.name}
               </option>
             ))}
@@ -267,7 +350,6 @@ const ProductPricingButtons = () => {
           </select>
           <button onClick={() => setIsAddUserModalOpen(true)}>اضافة مستخدم</button>
           <button onClick={() => setIsUpdateUserModalOpen(true)}>تعديل مستخدم</button>
-          <button onClick={notify}>Notisfy!</button>
         </div>
 
         {/* Delivery Fee */}
@@ -280,7 +362,7 @@ const ProductPricingButtons = () => {
               value={0}
               onChange={(e) => setDeliveryFee(e.target.value)}
             />{" "}
-            0
+            0&nbsp;&nbsp;&nbsp;
           </label>
           <label>
             <input
@@ -290,7 +372,7 @@ const ProductPricingButtons = () => {
               defaultChecked
               onChange={(e) => setDeliveryFee(e.target.value)}
             />{" "}
-            20
+            20&nbsp;&nbsp;&nbsp;
           </label>
           <label>
             <input
@@ -298,14 +380,15 @@ const ProductPricingButtons = () => {
               name="deliveryFee"
               value={25}
               onChange={(e) => setDeliveryFee(e.target.value)}
-            />{" "}
-            25
+            />
+            25 &nbsp;&nbsp;&nbsp;
           </label>
           <label>
             Custom:
             <input
               type="number"
               min="0"
+              value={deliveryFee}
               onChange={(e) => setDeliveryFee(e.target.value)}
               style={{ marginLeft: "5px", width: "60px" }}
             />
@@ -315,7 +398,7 @@ const ProductPricingButtons = () => {
           <textarea
             name="notes"
             value={notes}
-            onChange={handleNotesChange}
+            onChange={(e) => setNotes(e.target.value)}
             style={{ height: "50px", width: "200px" }}
           />
         </div>
@@ -337,15 +420,15 @@ const ProductPricingButtons = () => {
       {/* Product Buttons */}
       <div style={{ display: "flex", marginRight: "200px", flexWrap: "wrap", border: "1px solid #ccc" }}>
         {/* <div style={{ flex: 3 }}> */}
-        {PPs.map((item) => (
-          <div key={item._id} style={{ minWidth: "250px", marginBottom: "50px" }}>
+        {PPs.map((item, index) => (
+          <div key={index} style={{ minWidth: "250px", marginBottom: "50px" }}>
             <h3>{item.name}</h3>
-            {item.products.map((product) => (
-              <div key={product._id}>
+            {item.products.map((product, index) => (
+              <div key={index}>
                 <h4>{product.name}</h4>
-                {product.productPricings.map((PP) => (
+                {product.productPricings.map((PP, index) => (
                   <>
-                    <button key={PP._id} onClick={() => addToOrder(PP)}>
+                    <button key={index} onClick={() => addToOrder(PP)}>
                       {PP.units} x {PP.totalKilos || "-"} x {PP.pricePerKiloOrUnit || "-"} = {PP.totalPrice}
                     </button>
                     <br />
@@ -391,8 +474,8 @@ const ProductPricingButtons = () => {
           </ul>
           <hr />
           <h4>الاجمالى : {calculateTotalCost()}</h4>
-          <button style={{ width: "100%", height: "50px" }} onClick={handleCreateOrder}>
-            اضافة الطلب
+          <button style={{ width: "100%", height: "50px" }} onClick={handleCreateOrUpdateOrder}>
+            {isUpdating ? "تعديل الطلب" : "اضافة الطلب"}
           </button>
           تاريخ التسليم : {deliveryDateOption}({deliveryDate})<br />
           اسم المشترى: {finalUser.name || "-"} <br />
@@ -445,4 +528,4 @@ const ProductPricingButtons = () => {
   );
 };
 
-export default ProductPricingButtons;
+export default CreateOrder;

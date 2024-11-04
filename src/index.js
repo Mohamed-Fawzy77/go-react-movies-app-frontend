@@ -13,6 +13,7 @@ import StandardProductDetails from "./components/StandardProductDetails";
 import ProductDetails from "./components/ProductDetails";
 import UsersPage from "./components/UsersPage";
 import UpdateOrder from "./components/UpdateOrder";
+import SingleOrderPrinter from "./components/SingleOrderPrint";
 
 const router = createBrowserRouter([
   {
@@ -43,7 +44,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/order/:id",
-        element: <UpdateOrder />,
+        element: <CreateOrder update={true} />,
+      },
+      {
+        path: "/order/print/:id",
+        element: <SingleOrderPrinter />,
       },
       {
         path: "/sps",

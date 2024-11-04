@@ -116,32 +116,32 @@ function App() {
           <h1 className="mt-3 text-center">Delivery Souq Gomla</h1>
         </div>
         <div className="col text-end mt-3">
-          <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul class="navbar-nav">
+          <nav className="navbar navbar-expand-lg navbar-light bg-light">
+            <div className="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul className="navbar-nav">
                 {jwt && (
                   <>
-                    <li class="nav-item">
+                    <li className="nav-item">
                       <Link to="/" className="list-group-item list-group-item-action">
                         <span className="badge bg-success">الصفحة الرئيسية</span>
                       </Link>
                     </li>
-                    <li class="nav-item">
+                    <li className="nav-item">
                       <Link to="/orders" className="list-group-item list-group-item-action">
                         <span className="badge bg-success">الطلبات</span>
                       </Link>
                     </li>
-                    <li class="nav-item">
+                    <li className="nav-item">
                       <Link to="/create-order" className="list-group-item list-group-item-action">
                         <span className="badge bg-success"> طلب جديد </span>
                       </Link>
                     </li>
-                    <li class="nav-item">
+                    <li className="nav-item">
                       <Link to="/sps" className="list-group-item list-group-item-action">
                         <span className="badge bg-success"> المنتجات </span>
                       </Link>
                     </li>
-                    <li class="nav-item">
+                    <li className="nav-item">
                       <Link to="/users" className="list-group-item list-group-item-action">
                         <span className="badge bg-success"> المستخدمين </span>
                       </Link>

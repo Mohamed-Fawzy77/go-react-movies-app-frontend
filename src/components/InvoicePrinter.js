@@ -135,11 +135,14 @@ margin: 0;}
 
                 <style>
                 @page { size: A4}
-                      body { display: flex; flex-wrap: wrap; direction: rtl;font-size:18px;}
+                      body { flex-wrap: wrap; direction: rtl;font-size:18px;}
                       
                       </style>
 
                 <body>
+                    <div>
+                    ${new Date().toISOString()}
+                    </div>
                     ${allPPRef.current.innerHTML}
                 </body>
             </html>
