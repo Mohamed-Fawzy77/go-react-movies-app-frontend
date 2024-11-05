@@ -2,7 +2,7 @@
 import React, { useRef } from "react";
 import Invoice from "./Invoice";
 const amountPattern = /\d+(ك|ج)$/;
-const InvoicePrinter = ({ orders }) => {
+const InvoicePrinter = ({ orders, deliveryAgentName, agentTotalMoney, ordersCount }) => {
   const printRef = useRef();
   const allPPRef = useRef();
 
@@ -135,13 +135,16 @@ margin: 0;}
 
                 <style>
                 @page { size: A4}
-                      body { flex-wrap: wrap; direction: rtl;font-size:18px;}
+                      body {  direction: rtl;font-size:18px; padding-top: 10px;}
                       
                       </style>
 
                 <body>
-                    <div>
-                    ${new Date().toISOString()}
+                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                   <span> ${new Date().toISOString()}</span>
+                   <span> ${deliveryAgentName ? `المندوب: ${deliveryAgentName}` : ""}</span>
+                  <span>  ${deliveryAgentName && agentTotalMoney ? `اجمالى : ${agentTotalMoney}` : ""}</span>
+                  <span>  ${ordersCount ? `عدد الطلبات: ${ordersCount}` : ""}</span>
                     </div>
                     ${allPPRef.current.innerHTML}
                 </body>

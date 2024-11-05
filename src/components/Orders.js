@@ -19,7 +19,7 @@ const OrdersPage = () => {
   const [isDeliveryModalOpen, setIsDeliveryModalOpen] = useState(false);
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10).toString());
   const [orderToDelete, setOrderToDelete] = useState(null);
-  const [selectedDeliveryAgentForFilter, setSelectedDeliveryAgentForFilter] = useState(null);
+  const [selectedDeliveryAgentIdForFilter, setSelectedDeliveryAgentIdForFilter] = useState(null);
   const [toBeAssignedDeliveryId, setToBeAssignedDeliveryId] = useState("None");
   const [toBeAssignedDeliveryOrderId, setToBeAssignedDeliveryOrderId] = useState("None");
   useEffect(() => {
@@ -39,8 +39,8 @@ const OrdersPage = () => {
     const fetchOrders = async () => {
       try {
         const url =
-          selectedDeliveryAgentForFilter !== "None" && selectedDeliveryAgentForFilter
-            ? `http://localhost:5000/orders?deliveryAgent=${selectedDeliveryAgentForFilter}&deliveryDate=${date}`
+          selectedDeliveryAgentIdForFilter !== "None" && selectedDeliveryAgentIdForFilter
+            ? `http://localhost:5000/orders?deliveryAgent=${selectedDeliveryAgentIdForFilter}&deliveryDate=${date}`
             : `http://localhost:5000/orders?deliveryDate=${date}`;
 
         const res = await axios.get(url);
@@ -52,7 +52,7 @@ const OrdersPage = () => {
     };
 
     fetchOrders();
-  }, [date, selectedDeliveryAgentForFilter]);
+  }, [date, selectedDeliveryAgentIdForFilter]);
 
   const columns = React.useMemo(
     () => [
@@ -153,6 +153,7 @@ const OrdersPage = () => {
   );
 
   const totalCost = orders.reduce((acc, order) => acc + order.orderTotalPriceAfterDiscount, 0);
+  const deliveryAgent = deliveryAgents.find((agent) => agent._id === selectedDeliveryAgentIdForFilter);
 
   return (
     <>
@@ -165,8 +166,8 @@ const OrdersPage = () => {
       />
 
       <select
-        value={selectedDeliveryAgentForFilter}
-        onChange={(e) => setSelectedDeliveryAgentForFilter(e.target.value)}
+        value={selectedDeliveryAgentIdForFilter}
+        onChange={(e) => setSelectedDeliveryAgentIdForFilter(e.target.value)}
         style={{ width: "100%", padding: "8px" }}
       >
         <option value={"None"}>Select a delivery agent</option>
@@ -178,7 +179,12 @@ const OrdersPage = () => {
       </select>
 
       <h3>Total: {totalCost}</h3>
-      <InvoicePrinter orders={orders} />
+      <InvoicePrinter
+        orders={orders}
+        agentTotalMoney={totalCost}
+        ordersCount={orders.length}
+        deliveryAgentName={deliveryAgent ? deliveryAgent.name : ""}
+      />
       <Table columns={columns} data={orders} />
       <Modal
         isOpen={isDeleteModalOpen}
