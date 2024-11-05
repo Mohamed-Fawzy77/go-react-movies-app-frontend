@@ -85,8 +85,13 @@ const Invoice = ({ order }) => {
             </tr>
           </tbody>
         </table>
-        <div style={{ textAlign: "center", marginTop: "10px" }}>{order.address}</div>
-        <div style={{ textAlign: "center", marginTop: "10px" }}>{order.notes} </div>
+        <div style={{ direction: "rtl" }}>
+          <div style={{ marginTop: "10px" }}> العنوان: {order.address}</div>
+          {order.notes && <div style={{ marginTop: "10px" }}> الملاحظات: {order.notes} </div>}
+          {order.deliveryAgent && (
+            <div style={{ marginTop: "10px" }}> المندوب: {order.deliveryAgent.name} </div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -7,8 +7,28 @@ import AddUserForm from "./components/AddUserForm";
 import { toast } from "react-toastify";
 Modal.setAppElement("#root");
 
+function filiterInActiveEntities(SPs) {
+  const filteredData = SPs.map((standardProduct) => {
+    // Filter active products within each standard product
+    const activeProducts = standardProduct.products
+      .map((product) => {
+        // Filter active product pricings within each product
+        const activePricings = product.productPricings.filter((pricing) => pricing.isActive);
+
+        // Only keep the product if it has active pricings
+        return activePricings.length > 0 ? { ...product, productPricings: activePricings } : null;
+      })
+      .filter((product) => product !== null); // Remove null products
+
+    // Only keep the standard product if it has active products
+    return activeProducts.length > 0 ? { ...standardProduct, products: activeProducts } : null;
+  }).filter((standardProduct) => standardProduct !== null); // Remove null standard products
+
+  return filteredData;
+}
+
 const CreateOrder = () => {
-  const { users, data: PPs, deliveryAgents, jwt } = useOutletContext();
+  const { users, data, deliveryAgents, jwt } = useOutletContext();
   const [orderProducts, setOrderProducts] = useState([]);
   const [deliveryFee, setDeliveryFee] = useState(20);
   const [discount, setDiscount] = useState(0);
@@ -23,6 +43,7 @@ const CreateOrder = () => {
   const [notes, setNotes] = useState("");
   const { id } = useParams();
 
+  const SPs = filiterInActiveEntities(data);
   const isUpdating = !!id;
 
   useEffect(() => {
@@ -54,7 +75,7 @@ const CreateOrder = () => {
         setDeliveryFee(order.deliveryFee);
         setDiscount(order.discount);
         setSelectedUserId(buyerId);
-        setSelectedDeliveryAgent( order.deliveryAgent ?  order.deliveryAgent._id : null);
+        setSelectedDeliveryAgent(order.deliveryAgent ? order.deliveryAgent._id : null);
         setDeliveryDateOption(order.deliveryDate);
         setCustomDeliveryDate(order.deliveryDate);
         setNotes(order.notes);
@@ -90,7 +111,7 @@ const CreateOrder = () => {
 
   const PPMap = {};
 
-  for (const SP of PPs) {
+  for (const SP of SPs) {
     for (const product of SP.products) {
       for (const PP of product.productPricings) {
         PP.productName = product.name;
@@ -338,7 +359,7 @@ const CreateOrder = () => {
             value={selectedUserId}
             onChange={(e) => {
               setSelectedUserId(e.target.value);
-              setStateUser({})
+              setStateUser({});
             }}
             style={{ width: "100%", padding: "8px" }}
           >
@@ -421,20 +442,25 @@ const CreateOrder = () => {
       {/* Product Buttons */}
       <div style={{ display: "flex", marginRight: "200px", flexWrap: "wrap", border: "1px solid #ccc" }}>
         {/* <div style={{ flex: 3 }}> */}
-        {PPs.map((item, index) => (
+        {SPs.map((item, index) => (
           <div key={index} style={{ minWidth: "250px", marginBottom: "50px" }}>
             <h3>{item.name}</h3>
             {item.products.map((product, index) => (
               <div key={index}>
                 <h4>{product.name}</h4>
-                {product.productPricings.map((PP, index) => (
-                  <>
-                    <button key={index} onClick={() => addToOrder(PP)}>
-                      {PP.units} x {PP.totalKilos || "-"} x {PP.pricePerKiloOrUnit || "-"} = {PP.totalPrice}
-                    </button>
-                    <br />
-                  </>
-                ))}
+                {product.productPricings
+                  .filter((PP) => {
+                    console.log({ PP });
+                    return PP.isActive;
+                  })
+                  .map((PP, index) => (
+                    <>
+                      <button key={index} onClick={() => addToOrder(PP)}>
+                        {PP.units} x {PP.totalKilos || "-"} x {PP.pricePerKiloOrUnit || "-"} = {PP.totalPrice}
+                      </button>
+                      <br />
+                    </>
+                  ))}
               </div>
             ))}
           </div>

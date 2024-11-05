@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const ProductDetails = () => {
   const { id: productId } = useParams(); // Get the product ID from URL
@@ -86,10 +87,37 @@ const ProductDetails = () => {
       <ul>
         {pricings.map((pricing) => (
           <li key={pricing._id}>
-            Units: {pricing.units}, Total Kilos: {pricing.totalKilos}, Price per Kilo/Unit: {pricing.pricePerKiloOrUnit}, Total Price:{" "}
-            {pricing.totalPrice}
-            <button onClick={() => handleRemovePricing(pricing._id)}>Remove</button>
-            <button onClick={() => setEditPricing(pricing)}>Edit</button>
+            Units: {pricing.units}, Total Kilos: {pricing.totalKilos}, Price per Kilo/Unit:{" "}
+            {pricing.pricePerKiloOrUnit}, Total Price: {pricing.totalPrice}
+            {/* <button onClick={() => handleRemovePricing(pricing._id)}>Remove</button>
+            <button onClick={() => setEditPricing(pricing)}>Edit</button> */}
+            <button
+              className={"btn " + (pricing.isActive ? "btn-danger" : "btn-success")}
+              // className="btn btn-sm btn-primary"
+              onClick={() => {
+                axios
+                  .put(`http://localhost:5000/product-pricings/${pricing._id}`, {
+                    isActive: !pricing.isActive,
+                  })
+                  .then(() => {
+                    setPricings(
+                      pricings.map((p) => {
+                        if (p._id === pricing._id) {
+                          p.isActive = !p.isActive;
+                        }
+                        return p;
+                      })
+                    );
+                    toast.success("Pricing updated successfully");
+                  })
+                  .catch((err) => {
+                    toast.error("couldn't update pricing");
+                    console.error(err);
+                  });
+              }}
+            >
+              {pricing.isActive ? "Deactivate" : "Activate"}
+            </button>
           </li>
         ))}
       </ul>
@@ -125,7 +153,7 @@ const ProductDetails = () => {
       />
       <button onClick={handleAddPricing}>Add Pricing</button>
 
-      {editPricing && (
+      {/* {editPricing && (
         <div>
           <h3>Edit Pricing</h3>
           <input
@@ -154,7 +182,7 @@ const ProductDetails = () => {
           />
           <button onClick={handleEditPricing}>Save</button>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

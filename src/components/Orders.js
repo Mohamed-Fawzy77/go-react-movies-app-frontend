@@ -93,12 +93,12 @@ const OrdersPage = () => {
         accessor: (order) => order.orderProducts,
         minWidth: "400px",
         Cell: ({ value }) => (
-          <ul>
+          <ul style={{ direction: "rtl", width: "300px" }}>
             {value.map((product, index) => (
               <li key={index}>
-                {product.productPricing.product.name}:{product.productPricing.units * product.quantity} x{" "}
-                {product.productPricing.totalKilos * product.quantity} x{" "}
-                {product.productPricing.pricePerKiloOrUnit} ={" "}
+                {product.productPricing.product.name}:{product.productPricing.units * product.quantity} *{" "}
+                {product.productPricing.totalKilos * product.quantity || "-"} *{" "}
+                {product.productPricing.pricePerKiloOrUnit || "-"} ={" "}
                 {product.productPricing.totalPrice * product.quantity}{" "}
               </li>
             ))}
@@ -266,11 +266,6 @@ const OrdersPage = () => {
           className="mt-3"
           style={{ width: "100px" }}
           onClick={() => {
-            if (toBeAssignedDeliveryId === "None") {
-              toast.error("يجب تحديد مسؤول التوصيل");
-              return;
-            }
-
             axios
               .put(
                 `http://localhost:5000/orders/${toBeAssignedDeliveryOrderId}/assign-delivery-agent/${toBeAssignedDeliveryId}`
