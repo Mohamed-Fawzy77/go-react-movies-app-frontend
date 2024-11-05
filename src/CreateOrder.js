@@ -54,7 +54,7 @@ const CreateOrder = () => {
         setDeliveryFee(order.deliveryFee);
         setDiscount(order.discount);
         setSelectedUserId(buyerId);
-        setSelectedDeliveryAgent(order.deliveryAgent);
+        setSelectedDeliveryAgent( order.deliveryAgent ?  order.deliveryAgent._id : null);
         setDeliveryDateOption(order.deliveryDate);
         setCustomDeliveryDate(order.deliveryDate);
         setNotes(order.notes);
@@ -338,6 +338,7 @@ const CreateOrder = () => {
             value={selectedUserId}
             onChange={(e) => {
               setSelectedUserId(e.target.value);
+              setStateUser({})
             }}
             style={{ width: "100%", padding: "8px" }}
           >

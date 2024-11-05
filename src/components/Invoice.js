@@ -86,6 +86,7 @@ const Invoice = ({ order }) => {
           </tbody>
         </table>
         <div style={{ textAlign: "center", marginTop: "10px" }}>{order.address}</div>
+        <div style={{ textAlign: "center", marginTop: "10px" }}>{order.notes} </div>
       </div>
     </div>
   );
