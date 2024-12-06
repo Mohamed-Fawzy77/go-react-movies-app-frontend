@@ -38,10 +38,14 @@ const CreateOrder = () => {
   const [customDeliveryDate, setCustomDeliveryDate] = useState("");
   const [selectedDeliveryAgent, setSelectedDeliveryAgent] = useState(null);
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
+  const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false);
+  const [toBeDeactivatedPPId, setToBeDeactivatedProduct] = useState(null);
+  const [toBeDeactivatedProductText, setToBeDeactivatedProductText] = useState(null);
   const [isUpdateUserModalOpen, setIsUpdateUserModalOpen] = useState(false);
   const [stateUser, setStateUser] = useState({});
   const [notes, setNotes] = useState("");
   const { id } = useParams();
+  const [deactivatedPPs, setDeactivatedPPs] = useState([]);
 
   const SPs = filiterInActiveEntities(data);
   const isUpdating = !!id;
@@ -450,16 +454,30 @@ const CreateOrder = () => {
                 <h4>{product.name}</h4>
                 {product.productPricings
                   .filter((PP) => {
-                    console.log({ PP });
                     return PP.isActive;
                   })
                   .map((PP, index) => (
-                    <>
+                    <div style={{ display: deactivatedPPs.includes(PP._id) ? "none" : "block" }}>
                       <button key={index} onClick={() => addToOrder(PP)}>
                         {PP.units} x {PP.totalKilos || "-"} x {PP.pricePerKiloOrUnit || "-"} = {PP.totalPrice}
                       </button>
+                      {/* zz */}
+                      <button
+                        className="btn btn-danger"
+                        onClick={() => {
+                          setIsDeactivateModalOpen(true);
+                          setToBeDeactivatedProduct(PP._id);
+                          setToBeDeactivatedProductText(
+                            ` ${item.name} \n ${product.name} \n ${PP.units} x ${PP.totalKilos || "-"} x ${
+                              PP.pricePerKiloOrUnit || "-"
+                            } = ${PP.totalPrice}`
+                          );
+                        }}
+                      >
+                        تعطيل
+                      </button>
                       <br />
-                    </>
+                    </div>
                   ))}
               </div>
             ))}
@@ -550,6 +568,51 @@ const CreateOrder = () => {
         <h2>تعديل المستخدم</h2>
         <AddUserForm UserAdded={UserAdded} toBeUpdatedUser={user} />
         <button onClick={() => setIsUpdateUserModalOpen(false)}>اغلاق</button>
+      </Modal>
+
+      {/* de activate modal  */}
+      <Modal
+        isOpen={isDeactivateModalOpen}
+        onRequestClose={() => setIsDeactivateModalOpen(false)} // Closes the modal when clicking outside or pressing "Escape"
+        contentLabel="Example Modal"
+        style={{
+          content: {
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+          },
+        }}
+      >
+        <h2>هل تريد تعطيل هذا المنتج؟</h2>
+
+        <p style={{ whiteSpace: "pre-line" }}>{toBeDeactivatedProductText}</p>
+        <br />
+        <button
+          className="btn btn-danger mt-5 mb-5 mr-5 ml-5"
+          // className="btn btn-sm btn-primary"
+          onClick={() => {
+            axios
+              .put(`http://localhost:5000/product-pricings/${toBeDeactivatedPPId}`, {
+                isActive: false,
+              })
+              .then(() => {
+                toast.success("Pricing deactivated successfully");
+                setIsDeactivateModalOpen(false);
+                setDeactivatedPPs([...deactivatedPPs, toBeDeactivatedPPId]);
+              })
+              .catch((err) => {
+                toast.error("couldn't update pricing");
+                console.error(err);
+              });
+          }}
+        >
+          Deactivate
+        </button>
+        <br />
+        <button onClick={() => setIsDeactivateModalOpen(false)}>اغلاق</button>
       </Modal>
     </div>
   );
