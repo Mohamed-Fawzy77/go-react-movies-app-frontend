@@ -30,7 +30,7 @@ const Login = () => {
       removeAlert();
       login(data.access_token);
     } catch (error) {
-      console.log({ error });
+      console.error({ error });
       setDangerAlert("phone or password is incorrect");
     }
   };

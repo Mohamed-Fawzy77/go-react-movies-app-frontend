@@ -27,6 +27,7 @@ function formateDate(dateTime) {
 function getInfoString(order) {
   const creator = order.creatorAdmin?.name ? getFirstTwoLetters(order.creatorAdmin?.name) : "-";
   const string = `by: ${creator}
+  number: #${order.number}
   created: ${formateDate(order.createdAt)} ${
     order.createdAt.toString() !== order.updatedAt.toString()
       ? `\nupdated: ${formateDate(order.updatedAt)}`
@@ -48,13 +49,64 @@ const OrdersPage = () => {
   const [toBeAssignedDeliveryId, setToBeAssignedDeliveryId] = useState("None");
   const [toBeAssignedDeliveryOrderId, setToBeAssignedDeliveryOrderId] = useState("None");
   const [filteredRows, setFilteredRows] = useState([]);
+  const [isUpdateAllOrdersModalOpen, setIsUpdateAllOrdersModalOpen] = useState(false);
+  const [toBeUpdatedProduct, setToBeUpdatedProduct] = useState(null);
+  const [toBeUpdatedToProductPPs, setToBeUpdatedToProductPPs] = useState([]);
+  const [toBeUpdatedToPP, setToBeUpdatedToPP] = useState(null);
+
+  // const getPPsForProduct = (prodId) => {
+  //   const PPs = await axios.get(`http://localhost:5000/product-pricings/${prodId}`);
+  //   setToBeUpdatedProductPPs(PPs.data);
+  // };
+
+  useEffect(() => {
+    async function fetchPPs() {
+      if (toBeUpdatedProduct) {
+        const response = await axios.get(
+          `http://localhost:5000/product-pricings?product=${toBeUpdatedProduct}`
+        );
+
+        setToBeUpdatedToProductPPs(response.data);
+      }
+    }
+
+    fetchPPs();
+  }, [toBeUpdatedProduct]);
+
+  const productsCount = {};
+  const productIdToName = {};
+
+  for (const order of filteredRows) {
+    const orderProducts = new Set();
+    order.orderProducts.forEach((OP) => {
+      orderProducts.add(OP.productPricing.product._id);
+      productIdToName[OP.productPricing.product._id] = OP.productPricing.product.name;
+    });
+
+    for (const orderProduct of orderProducts) {
+      if (!productsCount[orderProduct]) {
+        productsCount[orderProduct] = 0;
+      }
+      productsCount[orderProduct]++;
+    }
+  }
+
+  const commonProducts = Object.entries(productsCount)
+    .filter(([productId, count]) => {
+      return count === filteredRows.length;
+    })
+    .map((ele) => {
+      return {
+        _id: ele[0],
+        name: productIdToName[ele[0]],
+      };
+    });
 
   useEffect(() => {
     const getDeliveryAgents = async () => {
       try {
         const res = await axios.get("http://localhost:5000/users/delivery-agents");
         setDeliveryAgents(res.data);
-        console.log({ del: res.data });
       } catch (error) {
         toast.error("error fetching delivery agents");
         console.error("error fetching delivery agents", error);
@@ -130,8 +182,6 @@ const OrdersPage = () => {
     const order = v.row.original;
     const quickAssignAgents = deliveryAgents.filter((agent) => agent.quickAssign);
 
-    console.log({ quickAssignAgents });
-
     return (
       <>
         {quickAssignAgents.map((agent, index) => (
@@ -154,7 +204,7 @@ const OrdersPage = () => {
                 })
                 .catch((err) => {
                   toast.error("حدث خطأ ما أثناء عملية التعيين");
-                  console.log(err);
+                  console.error(err);
                 });
             }}
           >
@@ -277,7 +327,100 @@ const OrdersPage = () => {
         ordersCount={orders.length}
         deliveryAgentName={deliveryAgent ? deliveryAgent.name : ""}
       />
+      <button onClick={() => setIsUpdateAllOrdersModalOpen(true)}> تعديل كل الطلبات </button>
       <Table columns={columns} data={orders} setFilteredRows={setFilteredRows} />
+
+      {/* update all orders modal */}
+      <Modal
+        isOpen={isUpdateAllOrdersModalOpen}
+        onRequestClose={() => {
+          setToBeUpdatedToProductPPs([]);
+          setToBeUpdatedToPP(null);
+          setToBeUpdatedProduct(null);
+          setIsUpdateAllOrdersModalOpen(false);
+        }}
+        contentLabel="Delete Order Confirmation"
+        style={{
+          content: {
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+          },
+        }}
+      >
+        <select
+          onChange={(e) => setToBeUpdatedProduct(e.target.value)}
+          style={{ width: "100%", padding: "8px" }}
+        >
+          <option value={""}>Select a product</option>
+          {commonProducts.map((product, index) => (
+            <option key={index} value={product._id}>
+              {product.name}
+            </option>
+          ))}
+        </select>
+
+        {/* to be updated to product pricing */}
+        <select
+          onChange={(e) => setToBeUpdatedToPP(e.target.value)}
+          style={{ width: "100%", padding: "8px" }}
+        >
+          {/* <option value={"None"}>Select a product</option> */}
+          <option value={""}>Select a product pricing</option>
+          {toBeUpdatedToProductPPs
+            .filter((PP) => PP.isActive)
+            .map((PP, index) => (
+              <option key={index} value={PP._id}>
+                {PP.units} * {PP.totalKilos || "-"} * {PP.pricePerKiloOrUnit || "-"} = {PP.totalPrice}
+              </option>
+            ))}
+        </select>
+
+        <div className="text-center mt-3 mb-3">
+          <button
+            style={{ width: "100px" }}
+            onClick={async () => {
+              if (!toBeUpdatedProduct || !toBeUpdatedToPP) {
+                toast.error("من فضلك اختر المنتج والمنتج الجديد");
+                return;
+              }
+
+              await axios.patch(`http://localhost:5000/orders/update-multiple-orders`, {
+                toBeUpdatedProductId: toBeUpdatedProduct,
+                toBeUpdatedToPPId: toBeUpdatedToPP,
+                orderIds: filteredRows.map((order) => order._id),
+              });
+
+              setToBeUpdatedToProductPPs([]);
+              setToBeUpdatedToPP(null);
+              setToBeUpdatedProduct(null);
+              setIsUpdateAllOrdersModalOpen(false);
+              toast.success("تم تعديل كل الطلبات بنجاح");
+            }}
+          >
+            تعديل كل الطلبات
+          </button>
+        </div>
+
+        <div className="text-center mt-3 mb-3">
+          <button
+            style={{ width: "100px" }}
+            onClick={() => {
+              setToBeUpdatedToProductPPs([]);
+              setToBeUpdatedToPP(null);
+              setToBeUpdatedProduct(null);
+              setIsUpdateAllOrdersModalOpen(false);
+            }}
+          >
+            اغلاق
+          </button>
+        </div>
+      </Modal>
+
+      {/* delete order modal */}
       <Modal
         isOpen={isDeleteModalOpen}
         onRequestClose={() => setIsDeleteModalOpen(false)}
@@ -368,7 +511,7 @@ const OrdersPage = () => {
               })
               .catch((err) => {
                 toast.error("حدث خطأ ما");
-                console.log(err);
+                console.error(err);
               });
           }}
         >

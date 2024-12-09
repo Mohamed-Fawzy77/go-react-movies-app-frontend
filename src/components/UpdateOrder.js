@@ -18,8 +18,6 @@ const UpdateOrder = () => {
         (orderProduct) => orderProduct.productPricing === productPricingId
       );
 
-      console.log({ prevOrderProducts, productPricingId });
-
       if (existingIndex !== -1) {
         const firstPart = prevOrderProducts.slice(0, existingIndex);
         const secondPart = prevOrderProducts.slice(existingIndex + 1);
@@ -122,7 +120,7 @@ const UpdateOrder = () => {
         setOrder(order);
         setOrderProducts(orderProducts);
       } catch (error) {
-        console.log("error");
+        console.error("error");
       }
     };
 

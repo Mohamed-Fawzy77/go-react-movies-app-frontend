@@ -76,7 +76,6 @@ const Table = ({ columns, data, setFilteredRows }) => {
         </thead>
         <tbody {...getTableBodyProps()}>
           {page.map((row) => {
-            console.log({ row });
             prepareRow(row);
             return (
               <tr {...row.getRowProps()}>

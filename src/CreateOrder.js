@@ -74,7 +74,6 @@ const CreateOrder = () => {
         const res = await axios.get(`http://localhost:5000/orders/${id}`);
 
         const order = res.data;
-        console.log({ order });
 
         const orderProducts = [];
 
@@ -270,7 +269,6 @@ const CreateOrder = () => {
           `http://localhost:5000/orders/user/${selectedUserId}/${deliveryDate}`
         );
 
-        console.log({ x1: !bypassMultipleOrders, x2: response.data.orders.length > 0 });
         if (!bypassMultipleOrders && response.data.orders.length > 0) {
           setCurrentUserOrders(response.data.orders);
           setIsBypassMultipleOrdersModalOpen(true);
