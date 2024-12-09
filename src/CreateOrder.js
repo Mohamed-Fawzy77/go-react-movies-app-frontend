@@ -7,6 +7,17 @@ import AddUserForm from "./components/AddUserForm";
 import { toast } from "react-toastify";
 Modal.setAppElement("#root");
 
+const modalStyle = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+  },
+};
+
 function filiterInActiveEntities(SPs) {
   const filteredData = SPs.map((standardProduct) => {
     // Filter active products within each standard product
@@ -47,6 +58,8 @@ const CreateOrder = () => {
   const { id } = useParams();
   const [deactivatedPPs, setDeactivatedPPs] = useState([]);
   const [isPaidOnline, setIsPaidOnline] = useState(false);
+  const [isBypassMultipleOrdersModalOpen, setIsBypassMultipleOrdersModalOpen] = useState(false);
+  const [currentUserOrders, setCurrentUserOrders] = useState([]);
 
   const SPs = filiterInActiveEntities(data);
   const isUpdating = !!id;
@@ -214,7 +227,7 @@ const CreateOrder = () => {
       ? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
       : new Date(customDeliveryDate || Date.now()).toISOString().slice(0, 10);
 
-  const handleCreateOrUpdateOrder = async () => {
+  const handleCreateOrUpdateOrder = async (bypassMultipleOrders) => {
     try {
       if (!selectedUserId) {
         toast.error("Please select a user");
@@ -253,6 +266,17 @@ const CreateOrder = () => {
           console.error("Error updating order:", error);
         }
       } else {
+        const response = await axios.get(
+          `http://localhost:5000/orders/user/${selectedUserId}/${deliveryDate}`
+        );
+
+        console.log({ x1: !bypassMultipleOrders, x2: response.data.orders.length > 0 });
+        if (!bypassMultipleOrders && response.data.orders.length > 0) {
+          setCurrentUserOrders(response.data.orders);
+          setIsBypassMultipleOrdersModalOpen(true);
+          return;
+        }
+
         await axios.post(
           "http://localhost:5000/orders",
           {
@@ -544,7 +568,7 @@ const CreateOrder = () => {
           </ul>
           <hr />
           <h4>الاجمالى : {calculateTotalCost()}</h4>
-          <button style={{ width: "100%", height: "50px" }} onClick={handleCreateOrUpdateOrder}>
+          <button style={{ width: "100%", height: "50px" }} onClick={() => handleCreateOrUpdateOrder()}>
             {isUpdating ? "تعديل الطلب" : "اضافة الطلب"}
           </button>
           تاريخ التسليم : {deliveryDateOption}({deliveryDate})<br />
@@ -555,20 +579,35 @@ const CreateOrder = () => {
         </div>
       </div>
 
+      {/* bypass multiple orders modal */}
+      <Modal
+        isOpen={isBypassMultipleOrdersModalOpen}
+        onRequestClose={() => setIsBypassMultipleOrdersModalOpen(false)}
+        contentLabel="Example Modal"
+        style={modalStyle}
+      >
+        <h2>
+          هذا المستخدم لديه {currentUserOrders.length} {currentUserOrders.length === 1 ? "طلب" : "طلبات"}{" "}
+        </h2>
+        <button
+          onClick={() => {
+            handleCreateOrUpdateOrder(true);
+            setIsBypassMultipleOrdersModalOpen(false);
+          }}
+        >
+          موافق
+        </button>
+
+        <br />
+        <button onClick={() => setIsBypassMultipleOrdersModalOpen(false)}>اغلاق</button>
+      </Modal>
+
+      {/* add user modal */}
       <Modal
         isOpen={isAddUserModalOpen}
-        onRequestClose={() => setIsAddUserModalOpen(false)} // Closes the modal when clicking outside or pressing "Escape"
+        onRequestClose={() => setIsAddUserModalOpen(false)}
         contentLabel="Example Modal"
-        style={{
-          content: {
-            top: "50%",
-            left: "50%",
-            right: "auto",
-            bottom: "auto",
-            marginRight: "-50%",
-            transform: "translate(-50%, -50%)",
-          },
-        }}
+        style={modalStyle}
       >
         <h2>اضافة مستخدم</h2>
         <AddUserForm UserAdded={UserAdded} />
@@ -579,16 +618,7 @@ const CreateOrder = () => {
         isOpen={isUpdateUserModalOpen}
         onRequestClose={() => setIsUpdateUserModalOpen(false)} // Closes the modal when clicking outside or pressing "Escape"
         contentLabel="Example Modal"
-        style={{
-          content: {
-            top: "50%",
-            left: "50%",
-            right: "auto",
-            bottom: "auto",
-            marginRight: "-50%",
-            transform: "translate(-50%, -50%)",
-          },
-        }}
+        style={modalStyle}
       >
         <h2>تعديل المستخدم</h2>
         <AddUserForm UserAdded={UserAdded} toBeUpdatedUser={user} />
@@ -600,16 +630,7 @@ const CreateOrder = () => {
         isOpen={isDeactivateModalOpen}
         onRequestClose={() => setIsDeactivateModalOpen(false)} // Closes the modal when clicking outside or pressing "Escape"
         contentLabel="Example Modal"
-        style={{
-          content: {
-            top: "50%",
-            left: "50%",
-            right: "auto",
-            bottom: "auto",
-            marginRight: "-50%",
-            transform: "translate(-50%, -50%)",
-          },
-        }}
+        style={modalStyle}
       >
         <h2>هل تريد تعطيل هذا المنتج؟</h2>
 
