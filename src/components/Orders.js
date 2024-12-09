@@ -5,12 +5,37 @@ import axios from "axios";
 import InvoicePrinter from "./InvoicePrinter";
 import Modal from "react-modal";
 import { toast } from "react-toastify";
+import { getFirstTwoLetters } from "../utils/string";
 
 const StatusMapper = {
   1: "Pending",
   5: "Delivered",
   6: "Cancelled",
 };
+
+function formateDate(dateTime) {
+  return new Date(dateTime)
+    .toLocaleString("en-US", {
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    })
+    .replace(",", "");
+}
+function getInfoString(order) {
+  const creator = order.creatorAdmin?.name ? getFirstTwoLetters(order.creatorAdmin?.name) : "-";
+  const string = `by: ${creator}
+  created: ${formateDate(order.createdAt)} ${
+    order.createdAt.toString() !== order.updatedAt.toString()
+      ? `\nupdated: ${formateDate(order.updatedAt)}`
+      : ""
+  }  ${order.isPaidOnline ? "\npaid online" : ""}${
+    order.discount > 0 ? `\ndiscount: ${order.discount}` : ""
+  } `;
+  return string;
+}
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
@@ -57,10 +82,6 @@ const OrdersPage = () => {
   const columns = React.useMemo(
     () => [
       {
-        Header: "Buyer Name",
-        accessor: (order) => order.buyer.name, // accessor is the "key" in the data
-      },
-      {
         Header: "Buyer Phone",
         accessor: (order) => order.buyer.phone,
       },
@@ -72,10 +93,10 @@ const OrdersPage = () => {
         Header: "Total Cost",
         accessor: (order) => order.orderTotalPriceAfterDiscount,
       },
-      // {
-      //   Header: "Delivery Fee",
-      //   accessor: (order) => order.deliveryFee,
-      // },
+      {
+        Header: "Del",
+        accessor: (order) => order.deliveryFee,
+      },
       {
         Header: "Delivery Agent",
         accessor: (order) => order.deliveryAgent?.name || "Not Assigned",
@@ -84,31 +105,39 @@ const OrdersPage = () => {
         Header: "notes",
         accessor: (order) => order.notes,
       },
-      // {
-      //   Header: "Status",
-      //   accessor: (order) => StatusMapper[order.status],
-      // },
       {
         Header: "products",
-        accessor: (order) => order.orderProducts,
+        accessor: (order) => {
+          return order.orderProducts.map(
+            (product, index) =>
+              `${product.productPricing.product.name}:{product.productPricing.units * product.quantity} *{" "}
+              ${product.productPricing.totalKilos * product.quantity || "-"} *{" "}
+              ${product.productPricing.pricePerKiloOrUnit || "-"} ={" "}
+              ${product.productPricing.totalPrice * product.quantity}{" "}`
+          );
+        },
         minWidth: "400px",
-        Cell: ({ value }) => (
-          <ul style={{ direction: "rtl", width: "300px" }}>
-            {value.map((product, index) => (
-              <li key={index}>
-                {product.productPricing.product.name}:{product.productPricing.units * product.quantity} *{" "}
-                {product.productPricing.totalKilos * product.quantity || "-"} *{" "}
-                {product.productPricing.pricePerKiloOrUnit || "-"} ={" "}
-                {product.productPricing.totalPrice * product.quantity}{" "}
-              </li>
-            ))}
-          </ul>
-        ),
+        Cell: (input) => {
+          const order = input.row.original;
+          return (
+            <ul style={{ direction: "rtl", width: "300px" }}>
+              {order.orderProducts.map((product, index) => (
+                <li key={index}>
+                  {product.productPricing.product.name}:{product.productPricing.units * product.quantity} *{" "}
+                  {product.productPricing.totalKilos * product.quantity || "-"} *{" "}
+                  {product.productPricing.pricePerKiloOrUnit || "-"} ={" "}
+                  {product.productPricing.totalPrice * product.quantity}{" "}
+                </li>
+              ))}
+            </ul>
+          );
+        },
       },
       {
         Header: "Actions",
         accessor: (order) => order,
-        Cell: ({ value }) => {
+        Cell: (v) => {
+          const { value } = v;
           return (
             <>
               <button
@@ -146,6 +175,18 @@ const OrdersPage = () => {
               </button>
             </>
           );
+        },
+      },
+      {
+        Header: "info",
+        accessor: (order) => getInfoString(order),
+
+        Cell: (v) => {
+          let order = v.row.original;
+
+          const string = getInfoString(order);
+
+          return <div style={{ whiteSpace: "pre-line" }}>{string}</div>;
         },
       },
     ],

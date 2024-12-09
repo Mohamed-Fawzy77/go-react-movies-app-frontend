@@ -46,6 +46,7 @@ const CreateOrder = () => {
   const [notes, setNotes] = useState("");
   const { id } = useParams();
   const [deactivatedPPs, setDeactivatedPPs] = useState([]);
+  const [isPaidOnline, setIsPaidOnline] = useState(false);
 
   const SPs = filiterInActiveEntities(data);
   const isUpdating = !!id;
@@ -83,6 +84,7 @@ const CreateOrder = () => {
         setDeliveryDateOption(order.deliveryDate);
         setCustomDeliveryDate(order.deliveryDate);
         setNotes(order.notes);
+        setIsPaidOnline(order.isPaidOnline || false);
 
         const isDeliveryDayToday = new Date(order.deliveryDate).toDateString() === new Date().toDateString();
         const isDeliveryDayTomorrow =
@@ -199,8 +201,10 @@ const CreateOrder = () => {
     return totalCost + parseInt(deliveryFee) - parseInt(discount);
   };
 
-  const filteredUsers = users.filter((user) =>
-    `${user.phone} ${user.name} ${user.address}`.toLowerCase().includes(userSearch.toLowerCase())
+  const filteredUsers = users.filter(
+    (user) =>
+      user.type === "buyer" &&
+      `${user.phone} ${user.name} ${user.address}`.toLowerCase().includes(userSearch.toLowerCase())
   );
 
   const deliveryDate =
@@ -234,6 +238,7 @@ const CreateOrder = () => {
               deliveryAgent: selectedDeliveryAgent === "None" ? null : selectedDeliveryAgent,
               deliveryDate,
               notes,
+              isPaidOnline,
             },
             {
               headers: {
@@ -258,6 +263,7 @@ const CreateOrder = () => {
             deliveryAgent: selectedDeliveryAgent === "None" ? null : selectedDeliveryAgent,
             deliveryDate,
             notes,
+            isPaidOnline,
           },
           {
             headers: {
@@ -267,12 +273,13 @@ const CreateOrder = () => {
         );
 
         setOrderProducts([]);
-        setDeliveryFee(20);
+        // setDeliveryFee(20);
         setDiscount(0);
-        setSelectedUserId({});
+        setSelectedUserId(null);
         setSelectedDeliveryAgent(null);
         setCustomDeliveryDate("");
         setNotes("");
+        setIsPaidOnline(false);
         toast.success("تم انشاء الطلب بنجاح");
       }
     } catch (error) {
@@ -410,6 +417,15 @@ const CreateOrder = () => {
             25 &nbsp;&nbsp;&nbsp;
           </label>
           <label>
+            <input
+              type="radio"
+              name="deliveryFee"
+              value={30}
+              onChange={(e) => setDeliveryFee(e.target.value)}
+            />
+            30 &nbsp;&nbsp;&nbsp;
+          </label>
+          <label>
             Custom:
             <input
               type="number"
@@ -427,6 +443,15 @@ const CreateOrder = () => {
             onChange={(e) => setNotes(e.target.value)}
             style={{ height: "50px", width: "200px" }}
           />
+          {/* <div> */}
+          <input
+            type="checkbox"
+            checked={isPaidOnline}
+            onChange={(e) => setIsPaidOnline(e.target.checked)}
+            style={{ marginLeft: "10px", height: "20px", width: "20px" }}
+          />{" "}
+          online payment
+          {/* </div> */}
         </div>
 
         {/* Discount */}

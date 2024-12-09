@@ -15,7 +15,6 @@ function App() {
   const [users, setUsers] = useState([]);
   const [deliveryAgents, setDeliveryAgents] = useState([]);
   const [data, setData] = useState([]);
-  const [orders, setOrders] = useState([]);
 
   const navigate = useNavigate();
 
@@ -71,19 +70,6 @@ function App() {
 
     fetchUsers();
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const res = await axios.get(`http://localhost:5000/orders`);
-        setOrders(res.data.orders);
-      } catch (error) {
-        console.log("error");
-      }
-    };
-
-    fetchOrders();
   }, []);
 
   const login = (jwt) => {
@@ -217,7 +203,6 @@ function App() {
               data,
               deliveryAgents,
               jwt,
-              orders,
             }}
           />
         </div>

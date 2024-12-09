@@ -15,10 +15,9 @@ const DefaultColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows
   );
 };
 
-const Table = ({ columns, data }) => {
+const Table = ({ columns, data, setCurrentRows }) => {
   const defaultColumn = React.useMemo(
     () => ({
-      // Default Filter UI
       Filter: DefaultColumnFilter,
     }),
     []
@@ -41,6 +40,7 @@ const Table = ({ columns, data }) => {
       columns,
       data,
       defaultColumn, // Be sure to pass the defaultColumn option
+      initialState: { pageSize: 1000 },
     },
     useFilters, // Use the useFilters hook
     useSortBy,
