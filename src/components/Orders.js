@@ -143,16 +143,14 @@ const OrdersPage = () => {
                 .then((res) => {
                   setIsDeliveryModalOpen(false);
                   toast.success("تمت عملية التعيين بنجاح");
-
-                  //modify the order and update the delivery agent
-                  setOrders((prevOrders) => {
-                    const updatedOrders = [...prevOrders];
-                    const orderIndex = updatedOrders.findIndex((o) => o._id === order._id);
-                    if (orderIndex !== -1) {
-                      updatedOrders[orderIndex].deliveryAgent = agent;
-                    }
-                    return updatedOrders;
-                  });
+                  // setOrders((prevOrders) => {
+                  //   const updatedOrders = [...prevOrders];
+                  //   const orderIndex = updatedOrders.findIndex((o) => o._id === order._id);
+                  //   if (orderIndex !== -1) {
+                  //     updatedOrders[orderIndex].deliveryAgent = agent;
+                  //   }
+                  //   return updatedOrders;
+                  // });
                 })
                 .catch((err) => {
                   toast.error("حدث خطأ ما أثناء عملية التعيين");

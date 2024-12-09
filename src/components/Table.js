@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useTable, usePagination, useSortBy, useFilters } from "react-table";
 
 // Default UI for filtering
@@ -8,6 +8,7 @@ const DefaultColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows
   return (
     <input
       value={filterValue || ""}
+      onClick={(e) => e.stopPropagation()}
       onChange={(e) => setFilter(e.target.value || undefined)} // Set undefined to remove the filter entirely
       placeholder={`Search ${count} records...`}
       style={{ width: "100%" }}
@@ -29,7 +30,7 @@ const Table = ({ columns, data, setFilteredRows }) => {
     headerGroups,
     prepareRow,
     page,
-    rows, // All filtered rows
+    rows,
     canPreviousPage,
     canNextPage,
     pageOptions,
@@ -40,10 +41,10 @@ const Table = ({ columns, data, setFilteredRows }) => {
     {
       columns,
       data,
-      defaultColumn, // Be sure to pass the defaultColumn option
+      defaultColumn,
       initialState: { pageSize: 1000 },
     },
-    useFilters, // Use the useFilters hook
+    useFilters,
     useSortBy,
     usePagination
   );
@@ -75,6 +76,7 @@ const Table = ({ columns, data, setFilteredRows }) => {
         </thead>
         <tbody {...getTableBodyProps()}>
           {page.map((row) => {
+            console.log({ row });
             prepareRow(row);
             return (
               <tr {...row.getRowProps()}>
