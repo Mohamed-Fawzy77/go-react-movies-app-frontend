@@ -15,7 +15,7 @@ const DefaultColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows
   );
 };
 
-const Table = ({ columns, data, setCurrentRows }) => {
+const Table = ({ columns, data, setFilteredRows }) => {
   const defaultColumn = React.useMemo(
     () => ({
       Filter: DefaultColumnFilter,
@@ -29,6 +29,7 @@ const Table = ({ columns, data, setCurrentRows }) => {
     headerGroups,
     prepareRow,
     page,
+    rows, // All filtered rows
     canPreviousPage,
     canNextPage,
     pageOptions,
@@ -46,6 +47,12 @@ const Table = ({ columns, data, setCurrentRows }) => {
     useSortBy,
     usePagination
   );
+
+  React.useEffect(() => {
+    if (setFilteredRows) {
+      setFilteredRows(rows.map((row) => row.original));
+    }
+  }, [rows, setFilteredRows]);
 
   return (
     <>

@@ -47,11 +47,14 @@ const OrdersPage = () => {
   const [selectedDeliveryAgentIdForFilter, setSelectedDeliveryAgentIdForFilter] = useState(null);
   const [toBeAssignedDeliveryId, setToBeAssignedDeliveryId] = useState("None");
   const [toBeAssignedDeliveryOrderId, setToBeAssignedDeliveryOrderId] = useState("None");
+  const [filteredRows, setFilteredRows] = useState([]);
+
   useEffect(() => {
     const getDeliveryAgents = async () => {
       try {
         const res = await axios.get("http://localhost:5000/users/delivery-agents");
         setDeliveryAgents(res.data);
+        console.log({ del: res.data });
       } catch (error) {
         toast.error("error fetching delivery agents");
         console.error("error fetching delivery agents", error);
@@ -79,6 +82,91 @@ const OrdersPage = () => {
     fetchOrders();
   }, [date, selectedDeliveryAgentIdForFilter]);
 
+  const totalCost = orders.reduce((acc, order) => acc + order.orderTotalPriceAfterDiscount, 0);
+  const deliveryAgent = deliveryAgents.find((agent) => agent._id === selectedDeliveryAgentIdForFilter);
+
+  const getActionsCell = (v) => {
+    const { value } = v;
+    return (
+      <>
+        <button
+          onClick={() => {
+            window.open("/order/" + value._id, "_blank");
+          }}
+        >
+          تعديل
+        </button>
+
+        <button
+          onClick={() => {
+            setIsDeleteModalOpen(true);
+            setOrderToDelete(value);
+          }}
+        >
+          مسح
+        </button>
+
+        <button
+          onClick={() => {
+            window.open(`/order/print/${value._id}`, "_blank");
+          }}
+        >
+          طباعة
+        </button>
+
+        <button
+          onClick={() => {
+            setIsDeliveryModalOpen(true);
+            setToBeAssignedDeliveryOrderId(value._id);
+          }}
+        >
+          تعيين توصيل
+        </button>
+      </>
+    );
+  };
+
+  const getQuickAssignCell = (v) => {
+    const order = v.row.original;
+    const quickAssignAgents = deliveryAgents.filter((agent) => agent.quickAssign);
+
+    console.log({ quickAssignAgents });
+
+    return (
+      <>
+        {quickAssignAgents.map((agent, index) => (
+          <button
+            key={index}
+            onClick={() => {
+              axios
+                .put(`http://localhost:5000/orders/${order._id}/assign-delivery-agent/${agent._id}`)
+                .then((res) => {
+                  setIsDeliveryModalOpen(false);
+                  toast.success("تمت عملية التعيين بنجاح");
+
+                  //modify the order and update the delivery agent
+                  setOrders((prevOrders) => {
+                    const updatedOrders = [...prevOrders];
+                    const orderIndex = updatedOrders.findIndex((o) => o._id === order._id);
+                    if (orderIndex !== -1) {
+                      updatedOrders[orderIndex].deliveryAgent = agent;
+                    }
+                    return updatedOrders;
+                  });
+                })
+                .catch((err) => {
+                  toast.error("حدث خطأ ما أثناء عملية التعيين");
+                  console.log(err);
+                });
+            }}
+          >
+            {agent.name}
+          </button>
+        ))}
+      </>
+    );
+  };
+
   const columns = React.useMemo(
     () => [
       {
@@ -92,6 +180,11 @@ const OrdersPage = () => {
       {
         Header: "Total Cost",
         accessor: (order) => order.orderTotalPriceAfterDiscount,
+      },
+      {
+        Header: "quick assign",
+        accessor: (order) => "a",
+        Cell: getQuickAssignCell,
       },
       {
         Header: "Del",
@@ -108,13 +201,17 @@ const OrdersPage = () => {
       {
         Header: "products",
         accessor: (order) => {
-          return order.orderProducts.map(
-            (product, index) =>
-              `${product.productPricing.product.name}:{product.productPricing.units * product.quantity} *{" "}
+          return order.orderProducts
+            .map(
+              (product, index) =>
+                `${
+                  product.productPricing.product.name
+                }:{product.productPricing.units * product.quantity} *{" "}
               ${product.productPricing.totalKilos * product.quantity || "-"} *{" "}
               ${product.productPricing.pricePerKiloOrUnit || "-"} ={" "}
               ${product.productPricing.totalPrice * product.quantity}{" "}`
-          );
+            )
+            .join("");
         },
         minWidth: "400px",
         Cell: (input) => {
@@ -136,65 +233,20 @@ const OrdersPage = () => {
       {
         Header: "Actions",
         accessor: (order) => order,
-        Cell: (v) => {
-          const { value } = v;
-          return (
-            <>
-              <button
-                onClick={() => {
-                  window.open("/order/" + value._id, "_blank");
-                }}
-              >
-                تعديل
-              </button>
-
-              <button
-                onClick={() => {
-                  setIsDeleteModalOpen(true);
-                  setOrderToDelete(value);
-                }}
-              >
-                مسح
-              </button>
-
-              <button
-                onClick={() => {
-                  window.open(`/order/print/${value._id}`, "_blank");
-                }}
-              >
-                طباعة
-              </button>
-
-              <button
-                onClick={() => {
-                  setIsDeliveryModalOpen(true);
-                  setToBeAssignedDeliveryOrderId(value._id);
-                }}
-              >
-                تعيين توصيل
-              </button>
-            </>
-          );
-        },
+        Cell: getActionsCell,
       },
       {
         Header: "info",
         accessor: (order) => getInfoString(order),
-
         Cell: (v) => {
           let order = v.row.original;
-
           const string = getInfoString(order);
-
           return <div style={{ whiteSpace: "pre-line" }}>{string}</div>;
         },
       },
     ],
-    []
+    [deliveryAgents]
   );
-
-  const totalCost = orders.reduce((acc, order) => acc + order.orderTotalPriceAfterDiscount, 0);
-  const deliveryAgent = deliveryAgents.find((agent) => agent._id === selectedDeliveryAgentIdForFilter);
 
   return (
     <>
@@ -219,14 +271,15 @@ const OrdersPage = () => {
         ))}
       </select>
 
-      <h3>Total: {totalCost}</h3>
+      <h3>Today Total: {totalCost}</h3>
+      <h4>filteredRows Total: {filteredRows.length}</h4>
       <InvoicePrinter
         orders={orders}
         agentTotalMoney={totalCost}
         ordersCount={orders.length}
         deliveryAgentName={deliveryAgent ? deliveryAgent.name : ""}
       />
-      <Table columns={columns} data={orders} />
+      <Table columns={columns} data={orders} setFilteredRows={setFilteredRows} />
       <Modal
         isOpen={isDeleteModalOpen}
         onRequestClose={() => setIsDeleteModalOpen(false)}
@@ -259,7 +312,7 @@ const OrdersPage = () => {
                 })
                 .catch((err) => {
                   toast.error("حدث خطأ ما");
-                  console.log(err);
+                  console.error(err);
                 });
             }}
           >
