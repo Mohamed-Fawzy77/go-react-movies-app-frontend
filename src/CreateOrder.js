@@ -59,7 +59,10 @@ const CreateOrder = () => {
   const [deactivatedPPs, setDeactivatedPPs] = useState([]);
   const [isPaidOnline, setIsPaidOnline] = useState(false);
   const [isBypassMultipleOrdersModalOpen, setIsBypassMultipleOrdersModalOpen] = useState(false);
-  const [currentUserOrders, setCurrentUserOrders] = useState([]);
+  const [currentUserOrders, setCurrentUserOrders] = useState({
+    orders: [],
+    prevDayOrders: [],
+  });
 
   const SPs = filiterInActiveEntities(data);
   const isUpdating = !!id;
@@ -116,7 +119,7 @@ const CreateOrder = () => {
     };
 
     fetchOrder();
-  }, []);
+  }, [id]);
 
   const user = users.find((user) => user._id === selectedUserId) || {};
 
@@ -266,11 +269,14 @@ const CreateOrder = () => {
         }
       } else {
         const response = await axios.get(
-          `http://localhost:5000/orders/user/${selectedUserId}/${deliveryDate}`
+          `http://localhost:5000/orders/user-orders/${selectedUserId}/${deliveryDate}`
         );
 
-        if (!bypassMultipleOrders && response.data.orders.length > 0) {
-          setCurrentUserOrders(response.data.orders);
+        if (
+          !bypassMultipleOrders &&
+          (response.data.orders.length > 0 || response.data.prevDayOrders.length > 0)
+        ) {
+          setCurrentUserOrders(response.data);
           setIsBypassMultipleOrdersModalOpen(true);
           return;
         }
@@ -295,7 +301,7 @@ const CreateOrder = () => {
         );
 
         setOrderProducts([]);
-        // setDeliveryFee(20);
+        setDeliveryFee(20);
         setDiscount(0);
         setSelectedUserId(null);
         setSelectedDeliveryAgent(null);
@@ -416,6 +422,7 @@ const CreateOrder = () => {
               name="deliveryFee"
               value={0}
               onChange={(e) => setDeliveryFee(e.target.value)}
+              checked={deliveryFee === "0"}
             />{" "}
             0&nbsp;&nbsp;&nbsp;
           </label>
@@ -426,6 +433,7 @@ const CreateOrder = () => {
               value={20}
               defaultChecked
               onChange={(e) => setDeliveryFee(e.target.value)}
+              checked={deliveryFee === "20"}
             />{" "}
             20&nbsp;&nbsp;&nbsp;
           </label>
@@ -435,6 +443,7 @@ const CreateOrder = () => {
               name="deliveryFee"
               value={25}
               onChange={(e) => setDeliveryFee(e.target.value)}
+              checked={deliveryFee === "25"}
             />
             25 &nbsp;&nbsp;&nbsp;
           </label>
@@ -444,6 +453,7 @@ const CreateOrder = () => {
               name="deliveryFee"
               value={30}
               onChange={(e) => setDeliveryFee(e.target.value)}
+              checked={deliveryFee === "30"}
             />
             30 &nbsp;&nbsp;&nbsp;
           </label>
@@ -585,8 +595,17 @@ const CreateOrder = () => {
         style={modalStyle}
       >
         <h2>
-          هذا المستخدم لديه {currentUserOrders.length} {currentUserOrders.length === 1 ? "طلب" : "طلبات"}{" "}
+          هذا المستخدم لديه {currentUserOrders.orders.length}{" "}
+          {currentUserOrders.orders.length === 1 ? "طلب" : "طلبات"} لليوم الحالى
         </h2>
+
+        <p className="mb-0">----------------------------</p>
+
+        <h2>
+          هذا المستخدم لديه {currentUserOrders.prevDayOrders.length}{" "}
+          {currentUserOrders.prevDayOrders.length === 1 ? "طلب" : "طلبات"} فى اليوم السابق
+        </h2>
+
         <button
           onClick={() => {
             handleCreateOrUpdateOrder(true);
