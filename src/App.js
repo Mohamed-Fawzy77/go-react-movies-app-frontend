@@ -94,15 +94,33 @@ function App() {
     setAlertClassName("alert-danger");
   };
 
+  // const backgroundImageStyle = {
+  //   backgroundImage: "url('/bg.jpg')",
+  //   backgroundSize: "cover", // Makes the image cover the entire viewport
+  //   backgroundRepeat: "no-repeat", // Prevents the image from repeating
+  //   backgroundPosition: "center", // Centers the image
+  //   minHeight: "100vh", // Ensures it covers the viewport height
+  //   width: "100%",
+  // };
+
+  const backgroundImageStyle = {
+    backgroundImage: "url('/bg2.png')",
+    backgroundSize: "cover", // Makes the image cover the entire viewport
+    backgroundRepeat: "no-repeat", // Prevents the image from repeating
+    backgroundPosition: "center", // Centers the image
+    backgroundAttachment: "fixed", // Fixes the image during scrolling
+    minHeight: "100vh", // Ensures it covers the viewport height
+    width: "100%",
+  };
   return (
-    <div className="container">
+    <div className="container" style={backgroundImageStyle}>
       <Alert className={alertClassName} message={alertMessage} />
       <div className="row">
         <div className="col">
           <h1 className="mt-3 text-center">Delivery Souq Gomla</h1>
         </div>
         <div className="col text-end mt-3">
-          <nav className="navbar navbar-expand-lg navbar-light bg-light">
+          <nav className="navbar navbar-expand-lg navbar-light bg-light trans-impor">
             <div className="collapse navbar-collapse" id="navbarSupportedContent">
               <ul className="navbar-nav">
                 {jwt && (
