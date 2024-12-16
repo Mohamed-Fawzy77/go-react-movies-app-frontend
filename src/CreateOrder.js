@@ -316,6 +316,10 @@ const CreateOrder = () => {
     }
   };
 
+  if (!data.length) {
+    return <>loading....</>;
+  }
+
   return (
     <div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
