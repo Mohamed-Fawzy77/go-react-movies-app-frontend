@@ -6,7 +6,7 @@ import InvoicePrinter from "./InvoicePrinter";
 import Modal from "react-modal";
 import { toast } from "react-toastify";
 import { getFirstTwoLetters } from "../utils/string";
-
+const backendURL = process.env.REACT_APP_BACKEND_URL;
 const StatusMapper = {
   1: "Pending",
   5: "Delivered",
@@ -55,16 +55,14 @@ const OrdersPage = () => {
   const [toBeUpdatedToPP, setToBeUpdatedToPP] = useState(null);
 
   // const getPPsForProduct = (prodId) => {
-  //   const PPs = await axios.get(`http://localhost:5000/product-pricings/${prodId}`);
+  //   const PPs = await axios.get(`${backendURL}/product-pricings/${prodId}`);
   //   setToBeUpdatedProductPPs(PPs.data);
   // };
 
   useEffect(() => {
     async function fetchPPs() {
       if (toBeUpdatedProduct) {
-        const response = await axios.get(
-          `http://localhost:5000/product-pricings?product=${toBeUpdatedProduct}`
-        );
+        const response = await axios.get(`${backendURL}/product-pricings?product=${toBeUpdatedProduct}`);
 
         setToBeUpdatedToProductPPs(response.data);
       }
@@ -105,7 +103,7 @@ const OrdersPage = () => {
   useEffect(() => {
     const getDeliveryAgents = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/users/delivery-agents");
+        const res = await axios.get(`${backendURL}/users/delivery-agents`);
         setDeliveryAgents(res.data);
       } catch (error) {
         toast.error("error fetching delivery agents");
@@ -120,8 +118,8 @@ const OrdersPage = () => {
       try {
         const url =
           selectedDeliveryAgentIdForFilter !== "None" && selectedDeliveryAgentIdForFilter
-            ? `http://localhost:5000/orders?deliveryAgent=${selectedDeliveryAgentIdForFilter}&deliveryDate=${date}`
-            : `http://localhost:5000/orders?deliveryDate=${date}`;
+            ? `${backendURL}/orders?deliveryAgent=${selectedDeliveryAgentIdForFilter}&deliveryDate=${date}`
+            : `${backendURL}/orders?deliveryDate=${date}`;
 
         const res = await axios.get(url);
 
@@ -189,7 +187,7 @@ const OrdersPage = () => {
             key={index}
             onClick={() => {
               axios
-                .put(`http://localhost:5000/orders/${order._id}/assign-delivery-agent/${agent._id}`)
+                .put(`${backendURL}/orders/${order._id}/assign-delivery-agent/${agent._id}`)
                 .then((res) => {
                   setIsDeliveryModalOpen(false);
                   toast.success("تمت عملية التعيين بنجاح");
@@ -388,7 +386,7 @@ const OrdersPage = () => {
                 return;
               }
 
-              await axios.patch(`http://localhost:5000/orders/update-multiple-orders`, {
+              await axios.patch(`${backendURL}/orders/update-multiple-orders`, {
                 toBeUpdatedProductId: toBeUpdatedProduct,
                 toBeUpdatedToPPId: toBeUpdatedToPP,
                 orderIds: filteredRows.map((order) => order._id),
@@ -443,7 +441,7 @@ const OrdersPage = () => {
             style={{ width: "100px" }}
             onClick={() => {
               axios
-                .delete("http://localhost:5000/orders/" + orderToDelete._id)
+                .delete(`${backendURL}/orders/` + orderToDelete._id)
                 .then((res) => {
                   setIsDeleteModalOpen(false);
 
@@ -503,7 +501,7 @@ const OrdersPage = () => {
           onClick={() => {
             axios
               .put(
-                `http://localhost:5000/orders/${toBeAssignedDeliveryOrderId}/assign-delivery-agent/${toBeAssignedDeliveryId}`
+                `${backendURL}/orders/${toBeAssignedDeliveryOrderId}/assign-delivery-agent/${toBeAssignedDeliveryId}`
               )
               .then((res) => {
                 setIsDeliveryModalOpen(false);

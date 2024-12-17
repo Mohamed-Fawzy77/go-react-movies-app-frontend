@@ -9,6 +9,8 @@ const StatusMapper = {
   6: "Cancelled",
 };
 
+const backendURL = process.env.REACT_APP_BACKEND_URL;
+
 const UsersPage = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,7 +20,7 @@ const UsersPage = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch("http://localhost:5000/users", { method: "GET" }); // Replace with your API endpoint
+        const response = await fetch(`${backendURL}/users`, { method: "GET" }); // Replace with your API endpoint
         const data = await response.json();
 
         setUsers(data);

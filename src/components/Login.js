@@ -1,7 +1,7 @@
 import { useOutletContext } from "react-router-dom";
 import Input from "./form/Input";
 import { useRef } from "react";
-
+const backendURL = process.env.REACT_APP_BACKEND_URL;
 const Login = () => {
   const { removeAlert, setDangerAlert, login } = useOutletContext();
 
@@ -13,7 +13,7 @@ const Login = () => {
       e.preventDefault();
       const body = JSON.stringify({ phone: phone.current.value, password: password.current.value });
 
-      const res = await fetch("http://localhost:5000/auth/login", {
+      const res = await fetch(`${backendURL}/auth/login`, {
         body,
         method: "POST",
         headers: {

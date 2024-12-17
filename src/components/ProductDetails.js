@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-
+const backendURL = process.env.REACT_APP_BACKEND_URL;
 const ProductDetails = () => {
   const { id: productId } = useParams(); // Get the product ID from URL
   const [product, setProduct] = useState(null);
@@ -23,7 +23,7 @@ const ProductDetails = () => {
 
   const fetchProduct = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/products/${productId}`);
+      const response = await axios.get(`${backendURL}/products/${productId}`);
       setProduct(response.data);
     } catch (error) {
       console.error("Error fetching product", error);
@@ -32,7 +32,7 @@ const ProductDetails = () => {
 
   const fetchPricings = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/product-pricings?product=${productId}`);
+      const response = await axios.get(`${backendURL}/product-pricings?product=${productId}`);
       setPricings(response.data);
     } catch (error) {
       console.error("Error fetching pricings", error);
@@ -41,7 +41,7 @@ const ProductDetails = () => {
 
   const handleAddPricing = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/product-pricings", newPricing);
+      const response = await axios.post(`${backendURL}/product-pricings`, newPricing);
       setNewPricing({
         units: 0,
         totalKilos: null,
@@ -57,7 +57,7 @@ const ProductDetails = () => {
 
   const handleRemovePricing = async (pricingId) => {
     try {
-      await axios.delete(`http://localhost:5000/product-pricings/${pricingId}`);
+      await axios.delete(`${backendURL}/product-pricings/${pricingId}`);
       fetchPricings();
     } catch (error) {
       console.error("Error removing pricing", error);
@@ -67,7 +67,7 @@ const ProductDetails = () => {
   const handleEditPricing = async () => {
     if (!editPricing) return;
     try {
-      await axios.put(`http://localhost:5000/product-pricings/${editPricing._id}`, editPricing);
+      await axios.put(`${backendURL}/product-pricings/${editPricing._id}`, editPricing);
       setEditPricing(null);
       fetchPricings();
     } catch (error) {
@@ -96,7 +96,7 @@ const ProductDetails = () => {
               // className="btn btn-sm btn-primary"
               onClick={() => {
                 axios
-                  .put(`http://localhost:5000/product-pricings/${pricing._id}`, {
+                  .put(`${backendURL}/product-pricings/${pricing._id}`, {
                     isActive: !pricing.isActive,
                   })
                   .then(() => {

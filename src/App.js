@@ -7,6 +7,8 @@ import "./App.css";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+const backendURL = process.env.REACT_APP_BACKEND_URL;
+
 function App() {
   const [alertMessage, setAlertMessage] = useState("");
   const [alertClassName, setAlertClassName] = useState("d-none");
@@ -34,7 +36,7 @@ function App() {
   useEffect(() => {
     const fetchPP = async () => {
       try {
-        const response = await fetch("http://localhost:5000/product-pricings", { method: "GET" });
+        const response = await fetch(`${backendURL}/product-pricings`, { method: "GET" });
         const data = await response.json();
 
         setSPs(data);
@@ -49,7 +51,7 @@ function App() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/users");
+        const response = await axios.get(`${backendURL}/users`);
         setUsers(response.data);
 
         const deliveryAgents = response.data.filter((user) => user.type === "delivery");
@@ -61,7 +63,7 @@ function App() {
 
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/product-pricings/all");
+        const response = await axios.get(`${backendURL}/product-pricings/all`);
         setData(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);

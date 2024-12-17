@@ -7,6 +7,7 @@ const UserType = {
   DELIVERY: "delivery",
   BUYER: "buyer",
 };
+const backendURL = process.env.REACT_APP_BACKEND_URL;
 
 const AddUserForm = ({ UserAdded, toBeUpdatedUser }) => {
   const userInfo = toBeUpdatedUser || {};
@@ -31,7 +32,7 @@ const AddUserForm = ({ UserAdded, toBeUpdatedUser }) => {
     e.preventDefault();
     try {
       if (toBeUpdatedUser) {
-        const updatedUser = await axios.put(`http://localhost:5000/users/${toBeUpdatedUser._id}`, userData);
+        const updatedUser = await axios.put(`${backendURL}/users/${toBeUpdatedUser._id}`, userData);
         alert("User updated successfully!");
         if (UserAdded) {
           UserAdded(updatedUser.data);
@@ -39,7 +40,7 @@ const AddUserForm = ({ UserAdded, toBeUpdatedUser }) => {
         return;
       }
 
-      const addedUser = await axios.post("http://localhost:5000/users", userData);
+      const addedUser = await axios.post(`${backendURL}/users`, userData);
       setUserData({
         phone: "",
         name: "",

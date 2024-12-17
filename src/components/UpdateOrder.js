@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useOutletContext, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-
+const backendURL = process.env.REACT_APP_BACKEND_URL;
 const UpdateOrder = () => {
   const [orderProducts, setOrderProducts] = useState([]);
   const { data: PPs } = useOutletContext();
@@ -103,7 +103,7 @@ const UpdateOrder = () => {
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/orders/${id}`);
+        const res = await axios.get(`${backendURL}/orders/${id}`);
 
         const order = res.data;
         const orderProducts = [];

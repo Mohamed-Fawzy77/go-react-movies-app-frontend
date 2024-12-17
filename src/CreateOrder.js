@@ -18,6 +18,7 @@ const modalStyle = {
   },
 };
 
+const backendURL = process.env.REACT_APP_BACKEND_URL;
 function filiterInActiveEntities(SPs) {
   const filteredData = SPs.map((standardProduct) => {
     // Filter active products within each standard product
@@ -74,7 +75,7 @@ const CreateOrder = () => {
           return;
         }
 
-        const res = await axios.get(`http://localhost:5000/orders/${id}`);
+        const res = await axios.get(`${backendURL}/orders/${id}`);
 
         const order = res.data;
 
@@ -244,7 +245,7 @@ const CreateOrder = () => {
       if (isUpdating) {
         try {
           await axios.put(
-            `http://localhost:5000/orders/${id}`,
+            `${backendURL}/orders/${id}`,
             {
               orderProducts: orderProducts,
               deliveryFee: parseInt(deliveryFee),
@@ -269,7 +270,7 @@ const CreateOrder = () => {
         }
       } else {
         const response = await axios.get(
-          `http://localhost:5000/orders/user-orders/${selectedUserId}/${deliveryDate}`
+          `${backendURL}/orders/user-orders/${selectedUserId}/${deliveryDate}`
         );
 
         if (
@@ -282,7 +283,7 @@ const CreateOrder = () => {
         }
 
         await axios.post(
-          "http://localhost:5000/orders",
+          `${backendURL}/orders`,
           {
             orderProducts: orderProducts,
             deliveryFee: parseInt(deliveryFee),
@@ -662,7 +663,7 @@ const CreateOrder = () => {
           // className="btn btn-sm btn-primary"
           onClick={() => {
             axios
-              .put(`http://localhost:5000/product-pricings/${toBeDeactivatedPPId}`, {
+              .put(`${backendURL}/product-pricings/${toBeDeactivatedPPId}`, {
                 isActive: false,
               })
               .then(() => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 import axios from "axios";
-
+const backendURL = process.env.REACT_APP_BACKEND_URL;
 const StandardProductDetails = () => {
   const { id } = useParams(); // Extract the standard product id from the URL
   const [standardProduct, setStandardProduct] = useState(null);
@@ -17,7 +17,7 @@ const StandardProductDetails = () => {
 
   const fetchStandardProduct = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/standard-products/${id}`);
+      const response = await axios.get(`${backendURL}/standard-products/${id}`);
       setStandardProduct(response.data);
     } catch (error) {
       console.error("Error fetching standard product", error);
@@ -26,7 +26,7 @@ const StandardProductDetails = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/products?standardProduct=${id}`);
+      const response = await axios.get(`${backendURL}/products?standardProduct=${id}`);
       setProducts(response.data);
     } catch (error) {
       console.error("Error fetching products", error);
@@ -35,7 +35,7 @@ const StandardProductDetails = () => {
 
   const handleAddProduct = async () => {
     try {
-      await axios.post("http://localhost:5000/products", newProduct);
+      await axios.post(`${backendURL}/products`, newProduct);
       setNewProduct({ name: "", standardProduct: id });
       fetchProducts();
     } catch (error) {
@@ -45,7 +45,7 @@ const StandardProductDetails = () => {
 
   const handleRemoveProduct = async (productId) => {
     try {
-      await axios.delete(`http://localhost:5000/products/${productId}`);
+      await axios.delete(`${backendURL}/products/${productId}`);
       fetchProducts();
     } catch (error) {
       console.error("Error removing product", error);
@@ -55,7 +55,7 @@ const StandardProductDetails = () => {
   const handleEditProduct = async () => {
     if (!editProduct) return;
     try {
-      await axios.put(`http://localhost:5000/products/${editProduct._id}`, editProduct);
+      await axios.put(`${backendURL}/products/${editProduct._id}`, editProduct);
       setEditProduct(null);
       fetchProducts();
     } catch (error) {
