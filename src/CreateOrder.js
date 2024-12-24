@@ -42,7 +42,7 @@ function filiterInActiveEntities(SPs) {
 const CreateOrder = () => {
   const { users, data, deliveryAgents, jwt } = useOutletContext();
   const [orderProducts, setOrderProducts] = useState([]);
-  const [deliveryFee, setDeliveryFee] = useState(20);
+  const [deliveryFee, setDeliveryFee] = useState("25");
   const [discount, setDiscount] = useState(0);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [userSearch, setUserSearch] = useState("");
@@ -302,7 +302,7 @@ const CreateOrder = () => {
         );
 
         setOrderProducts([]);
-        setDeliveryFee(20);
+        setDeliveryFee("25");
         setDiscount(0);
         setSelectedUserId(null);
         setSelectedDeliveryAgent(null);
