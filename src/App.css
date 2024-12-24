@@ -66,3 +66,11 @@
 .trans-impor {
   background-color: transparent !important;
 }
+
+.ml-1 {
+  margin-left: 10px;
+}
+
+.ml-2 {
+  margin-left: 20px;
+}

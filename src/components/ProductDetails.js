@@ -116,7 +116,34 @@ const ProductDetails = () => {
                   });
               }}
             >
-              {pricing.isActive ? "Deactivate" : "Activate"}
+              {pricing.isActive ? "Dashboard Deactivate" : "Dashboard Activate"}
+            </button>
+            <button
+              className={"btn ml-2 " + (pricing.isActiveInWeb ? "btn-danger" : "btn-success")}
+              // className="btn btn-sm btn-primary"
+              onClick={() => {
+                axios
+                  .put(`${backendURL}/product-pricings/${pricing._id}`, {
+                    isActiveInWeb: !pricing.isActiveInWeb,
+                  })
+                  .then(() => {
+                    setPricings(
+                      pricings.map((p) => {
+                        if (p._id === pricing._id) {
+                          p.isActiveInWeb = !p.isActiveInWeb;
+                        }
+                        return p;
+                      })
+                    );
+                    toast.success("Pricing updated successfully");
+                  })
+                  .catch((err) => {
+                    toast.error("couldn't update pricing");
+                    console.error(err);
+                  });
+              }}
+            >
+              {pricing.isActive ? "App Deactivate" : "App Activate"}
             </button>
           </li>
         ))}
