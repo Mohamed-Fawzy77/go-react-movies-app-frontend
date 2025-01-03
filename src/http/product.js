@@ -19,6 +19,18 @@ export const fetchProducts = async (id, setProducts) => {
   }
 };
 
+export const fetchOrders = async (date, setOrders) => {
+  console.log({ date, setOrders });
+  try {
+    const url = `${backendURL}/orders?deliveryDate=${date}`;
+
+    const res = await axios.get(url);
+    setOrders(res.data.orders);
+  } catch (error) {
+    console.error("Error fetching orders", error);
+  }
+};
+
 export const updateProductImage = async (productId, image) => {
   try {
     await axios.put(`${backendURL}/products/${productId}`, { image });

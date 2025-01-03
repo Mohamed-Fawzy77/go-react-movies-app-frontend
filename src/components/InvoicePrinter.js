@@ -177,9 +177,6 @@ margin: 0;}
                         ? "(" + PP.totalKilos + "ك" + ")"
                         : "(" + PP.totalPrice + "ج" + ")")}
                     :{orderProduct.quantity}
-                    {/* 
-                  * ({PP.units || "-"} * {PP.totalKilos || "-"} *{" "}
-                    {PP.pricePerKiloOrUnit || "-"} = {PP.totalPrice || "-"}) */}
                   </div>
                 </div>
               );

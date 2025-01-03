@@ -4,8 +4,9 @@
     <style>
       @page {
         size: A4;
+        margin: 10mm;
       }
-      body {
+      .all-invoices-container {
         display: flex;
         flex-wrap: wrap;
       }
@@ -17,6 +18,7 @@
         padding: 10px;
         box-sizing: border-box;
         margin: 5mm;
+        break-inside: avoid;
       }
 
       .page-break {
@@ -90,503 +92,495 @@
       }
     </style>
   </head>
-  <body data-new-gr-c-s-check-loaded="14.1215.0" data-gr-ext-installed="" data-gr-ext-disabled="forever">
-    <div
-      class="invoice-container1 invoice"
-      style="
-        height: 13.5cm;
-        border: 1px solid black;
-        border-radius: 5px;
-        width: calc(50% - 37.7953px);
-        padding: 10px;
-        box-sizing: border-box;
-        margin: 5mm;
-        --darkreader-inline-border-top: #8c8273;
-        --darkreader-inline-border-right: #8c8273;
-        --darkreader-inline-border-bottom: #8c8273;
-        --darkreader-inline-border-left: #8c8273;
-      "
-      data-darkreader-inline-border-top=""
-      data-darkreader-inline-border-right=""
-      data-darkreader-inline-border-bottom=""
-      data-darkreader-inline-border-left=""
-    >
-      <header class="invoice-header"></header>
-      <div class="invoice-body">
-        <div class="invoice-info">
-          <p class="invoice-title">دليفري سووق الجملة</p>
-          <img height="70x" width="70px" alt="logo" />
-          <p class="invoice-contact">
-            <span>01001237942</span> &nbsp;<img height="15px" width="15px" alt="logo" /><br /><img
-              height="50px"
-              width="50px"
-              alt="qr"
-              style="margin-right: 50px"
-            />
-          </p>
-        </div>
-        <div class="invoice-info">
-          <p>التاريخ: 2025-01-03</p>
-          <p>رقم تليفون العميل: 01018939263</p>
-        </div>
-        <br />
-        <table class="invoice-table">
-          <thead>
-            <tr>
-              <th>الصنف</th>
-              <th>سعر</th>
-              <th>كيلو</th>
-              <th>عدد</th>
-              <th>جنيه</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>kaka123</td>
-              <td>35</td>
-              <td>4</td>
-              <td>1</td>
-              <td>140</td>
-            </tr>
-            <tr>
-              <td>kaka123</td>
-              <td>35</td>
-              <td>4.2</td>
-              <td>1</td>
-              <td>147</td>
-            </tr>
-            <tr>
-              <td>توصيل</td>
-              <td colspan="4">25</td>
-            </tr>
-            <tr>
-              <td>المجموع</td>
-              <td colspan="4">312</td>
-            </tr>
-          </tbody>
-        </table>
-        <div style="direction: rtl">
-          <div style="margin-top: 10px">
-            العنوان: om طلخا يمين الكوبري شارع النوادي برج نوران اعلى مستشفى الهدى مقابل نادي
+  <body>
+    <div class="all-invoices-container">
+      <div
+        class="invoice-container1 invoice"
+        style="
+          height: 13.5cm;
+          border: 1px solid black;
+          border-radius: 5px;
+          width: calc(50% - 37.7953px);
+          padding: 10px;
+          box-sizing: border-box;
+          margin: 5mm;
+          --darkreader-inline-border-top: #8c8273;
+          --darkreader-inline-border-right: #8c8273;
+          --darkreader-inline-border-bottom: #8c8273;
+          --darkreader-inline-border-left: #8c8273;
+        "
+        data-darkreader-inline-border-top=""
+        data-darkreader-inline-border-right=""
+        data-darkreader-inline-border-bottom=""
+        data-darkreader-inline-border-left=""
+      >
+        <header class="invoice-header"></header>
+        <div class="invoice-body">
+          <div class="invoice-info">
+            <p class="invoice-title">دليفري سووق الجملة</p>
+            <img height="70x" width="70px" alt="logo" />
+            <p class="invoice-contact">
+              <span>01001237942</span> &nbsp;<img height="15px" width="15px" alt="logo" /><br /><img
+                height="50px"
+                width="50px"
+                alt="qr"
+                style="margin-right: 50px"
+              />
+            </p>
+          </div>
+          <div class="invoice-info">
+            <p>التاريخ: 2025-01-03</p>
+            <p>رقم تليفون العميل: 01018939263</p>
+          </div>
+          <br />
+          <table class="invoice-table">
+            <thead>
+              <tr>
+                <th>الصنف</th>
+                <th>سعر</th>
+                <th>كيلو</th>
+                <th>عدد</th>
+                <th>جنيه</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>kaka123</td>
+                <td>35</td>
+                <td>4</td>
+                <td>1</td>
+                <td>140</td>
+              </tr>
+              <tr>
+                <td>kaka123</td>
+                <td>35</td>
+                <td>4.2</td>
+                <td>1</td>
+                <td>147</td>
+              </tr>
+              <tr>
+                <td>توصيل</td>
+                <td colspan="4">25</td>
+              </tr>
+              <tr>
+                <td>المجموع</td>
+                <td colspan="4">312</td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="direction: rtl">
+            <div style="margin-top: 10px">
+              العنوان: om طلخا يمين الكوبري شارع النوادي برج نوران اعلى مستشفى الهدى مقابل نادي
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div style="break-after: page"></div>
-    <div
-      class="invoice-container1 invoice"
-      style="
-        height: 13.5cm;
-        border: 1px solid black;
-        border-radius: 5px;
-        width: calc(50% - 37.7953px);
-        padding: 10px;
-        box-sizing: border-box;
-        margin: 5mm;
-        --darkreader-inline-border-top: #8c8273;
-        --darkreader-inline-border-right: #8c8273;
-        --darkreader-inline-border-bottom: #8c8273;
-        --darkreader-inline-border-left: #8c8273;
-      "
-      data-darkreader-inline-border-top=""
-      data-darkreader-inline-border-right=""
-      data-darkreader-inline-border-bottom=""
-      data-darkreader-inline-border-left=""
-    >
-      <header class="invoice-header"></header>
-      <div class="invoice-body">
-        <div class="invoice-info">
-          <p class="invoice-title">دليفري سووق الجملة</p>
-          <img height="70x" width="70px" alt="logo" />
-          <p class="invoice-contact">
-            <span>01001237942</span> &nbsp;<img height="15px" width="15px" alt="logo" /><br /><img
-              height="50px"
-              width="50px"
-              alt="qr"
-              style="margin-right: 50px"
-            />
-          </p>
-        </div>
-        <div class="invoice-info">
-          <p>التاريخ: 2025-01-03</p>
-          <p>رقم تليفون العميل: 01011238116</p>
-        </div>
-        <br />
-        <table class="invoice-table">
-          <thead>
-            <tr>
-              <th>الصنف</th>
-              <th>سعر</th>
-              <th>كيلو</th>
-              <th>عدد</th>
-              <th>جنيه</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>10كيلو طماطم</td>
-              <td>-</td>
-              <td>30</td>
-              <td>3</td>
-              <td>240</td>
-            </tr>
-            <tr>
-              <td>25 كيلو طماطم</td>
-              <td>-</td>
-              <td>-</td>
-              <td>0</td>
-              <td>510</td>
-            </tr>
-            <tr>
-              <td>25ل 27 كيلو طماطم</td>
-              <td>-</td>
-              <td>-</td>
-              <td>0</td>
-              <td>160</td>
-            </tr>
-            <tr>
-              <td>توصيل</td>
-              <td colspan="4">25</td>
-            </tr>
-            <tr>
-              <td>المجموع</td>
-              <td colspan="4">935</td>
-            </tr>
-          </tbody>
-        </table>
-        <div style="direction: rtl">
-          <div style="margin-top: 10px">
-            العنوان: Samia قناة السويس خلف مستشفى الخير عند أسماك السندباد Abdel-Majid
+      <div
+        class="invoice-container1 invoice"
+        style="
+          height: 13.5cm;
+          border: 1px solid black;
+          border-radius: 5px;
+          width: calc(50% - 37.7953px);
+          padding: 10px;
+          box-sizing: border-box;
+          margin: 5mm;
+          --darkreader-inline-border-top: #8c8273;
+          --darkreader-inline-border-right: #8c8273;
+          --darkreader-inline-border-bottom: #8c8273;
+          --darkreader-inline-border-left: #8c8273;
+        "
+        data-darkreader-inline-border-top=""
+        data-darkreader-inline-border-right=""
+        data-darkreader-inline-border-bottom=""
+        data-darkreader-inline-border-left=""
+      >
+        <header class="invoice-header"></header>
+        <div class="invoice-body">
+          <div class="invoice-info">
+            <p class="invoice-title">دليفري سووق الجملة</p>
+            <img height="70x" width="70px" alt="logo" />
+            <p class="invoice-contact">
+              <span>01001237942</span> &nbsp;<img height="15px" width="15px" alt="logo" /><br /><img
+                height="50px"
+                width="50px"
+                alt="qr"
+                style="margin-right: 50px"
+              />
+            </p>
           </div>
-          <div style="margin-top: 10px">المندوب: A/hesham</div>
+          <div class="invoice-info">
+            <p>التاريخ: 2025-01-03</p>
+            <p>رقم تليفون العميل: 01011238116</p>
+          </div>
+          <br />
+          <table class="invoice-table">
+            <thead>
+              <tr>
+                <th>الصنف</th>
+                <th>سعر</th>
+                <th>كيلو</th>
+                <th>عدد</th>
+                <th>جنيه</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>10كيلو طماطم</td>
+                <td>-</td>
+                <td>30</td>
+                <td>3</td>
+                <td>240</td>
+              </tr>
+              <tr>
+                <td>25 كيلو طماطم</td>
+                <td>-</td>
+                <td>-</td>
+                <td>0</td>
+                <td>510</td>
+              </tr>
+              <tr>
+                <td>25ل 27 كيلو طماطم</td>
+                <td>-</td>
+                <td>-</td>
+                <td>0</td>
+                <td>160</td>
+              </tr>
+              <tr>
+                <td>توصيل</td>
+                <td colspan="4">25</td>
+              </tr>
+              <tr>
+                <td>المجموع</td>
+                <td colspan="4">935</td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="direction: rtl">
+            <div style="margin-top: 10px">
+              العنوان: Samia قناة السويس خلف مستشفى الخير عند أسماك السندباد Abdel-Majid
+            </div>
+            <div style="margin-top: 10px">المندوب: A/hesham</div>
+          </div>
         </div>
       </div>
-    </div>
-    <div
-      class="invoice-container1 invoice"
-      style="
-        height: 13.5cm;
-        border: 1px solid black;
-        border-radius: 5px;
-        width: calc(50% - 37.7953px);
-        padding: 10px;
-        box-sizing: border-box;
-        margin: 5mm;
-        --darkreader-inline-border-top: #8c8273;
-        --darkreader-inline-border-right: #8c8273;
-        --darkreader-inline-border-bottom: #8c8273;
-        --darkreader-inline-border-left: #8c8273;
-      "
-      data-darkreader-inline-border-top=""
-      data-darkreader-inline-border-right=""
-      data-darkreader-inline-border-bottom=""
-      data-darkreader-inline-border-left=""
-    >
-      <header class="invoice-header"></header>
-      <div class="invoice-body">
-        <div class="invoice-info">
-          <p class="invoice-title">دليفري سووق الجملة</p>
-          <img height="70x" width="70px" alt="logo" />
-          <p class="invoice-contact">
-            <span>01001237942</span> &nbsp;<img height="15px" width="15px" alt="logo" /><br /><img
-              height="50px"
-              width="50px"
-              alt="qr"
-              style="margin-right: 50px"
-            />
-          </p>
-        </div>
-        <div class="invoice-info">
-          <p>التاريخ: 2025-01-03</p>
-          <p>رقم تليفون العميل: 01033886519</p>
-        </div>
-        <br />
-        <table class="invoice-table">
-          <thead>
-            <tr>
-              <th>الصنف</th>
-              <th>سعر</th>
-              <th>كيلو</th>
-              <th>عدد</th>
-              <th>جنيه</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>kaka123</td>
-              <td>35</td>
-              <td>4.1</td>
-              <td>1</td>
-              <td>143.5</td>
-            </tr>
-            <tr>
-              <td>kaka123</td>
-              <td>35</td>
-              <td>4</td>
-              <td>1</td>
-              <td>140</td>
-            </tr>
-            <tr>
-              <td>kaka123</td>
-              <td>35</td>
-              <td>4.2</td>
-              <td>1</td>
-              <td>147</td>
-            </tr>
-            <tr>
-              <td>توصيل</td>
-              <td colspan="4">25</td>
-            </tr>
-            <tr>
-              <td>المجموع</td>
-              <td colspan="4">455.5</td>
-            </tr>
-          </tbody>
-        </table>
-        <div style="direction: rtl">
-          <div style="margin-top: 10px">العنوان: Abdul Rahman Salem</div>
-          <div style="margin-top: 10px">المندوب: A/hesham</div>
+      <div
+        class="invoice-container1 invoice"
+        style="
+          height: 13.5cm;
+          border: 1px solid black;
+          border-radius: 5px;
+          width: calc(50% - 37.7953px);
+          padding: 10px;
+          box-sizing: border-box;
+          margin: 5mm;
+        "
+      >
+        <header class="invoice-header"></header>
+        <div class="invoice-body">
+          <div class="invoice-info">
+            <p class="invoice-title">دليفري سووق الجملة</p>
+            <img height="70x" width="70px" alt="logo" />
+            <p class="invoice-contact">
+              <span>01001237942</span> &nbsp;<img height="15px" width="15px" alt="logo" /><br /><img
+                height="50px"
+                width="50px"
+                alt="qr"
+                style="margin-right: 50px"
+              />
+            </p>
+          </div>
+          <div class="invoice-info">
+            <p>التاريخ: 2025-01-03</p>
+            <p>رقم تليفون العميل: 01033886519</p>
+          </div>
+          <br />
+          <table class="invoice-table">
+            <thead>
+              <tr>
+                <th>الصنف</th>
+                <th>سعر</th>
+                <th>كيلو</th>
+                <th>عدد</th>
+                <th>جنيه</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>kaka123</td>
+                <td>35</td>
+                <td>4.1</td>
+                <td>1</td>
+                <td>143.5</td>
+              </tr>
+              <tr>
+                <td>kaka123</td>
+                <td>35</td>
+                <td>4</td>
+                <td>1</td>
+                <td>140</td>
+              </tr>
+              <tr>
+                <td>kaka123</td>
+                <td>35</td>
+                <td>4.2</td>
+                <td>1</td>
+                <td>147</td>
+              </tr>
+              <tr>
+                <td>توصيل</td>
+                <td colspan="4">25</td>
+              </tr>
+              <tr>
+                <td>المجموع</td>
+                <td colspan="4">455.5</td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="direction: rtl">
+            <div style="margin-top: 10px">العنوان: Abdul Rahman Salem</div>
+            <div style="margin-top: 10px">المندوب: A/hesham</div>
+          </div>
         </div>
       </div>
-    </div>
-    <div style="break-after: page"></div>
-    <div
-      class="invoice-container1 invoice"
-      style="
-        height: 13.5cm;
-        border: 1px solid black;
-        border-radius: 5px;
-        width: calc(50% - 37.7953px);
-        padding: 10px;
-        box-sizing: border-box;
-        margin: 5mm;
-        --darkreader-inline-border-top: #8c8273;
-        --darkreader-inline-border-right: #8c8273;
-        --darkreader-inline-border-bottom: #8c8273;
-        --darkreader-inline-border-left: #8c8273;
-      "
-      data-darkreader-inline-border-top=""
-      data-darkreader-inline-border-right=""
-      data-darkreader-inline-border-bottom=""
-      data-darkreader-inline-border-left=""
-    >
-      <header class="invoice-header"></header>
-      <div class="invoice-body">
-        <div class="invoice-info">
-          <p class="invoice-title">دليفري سووق الجملة</p>
-          <img height="70x" width="70px" alt="logo" />
-          <p class="invoice-contact">
-            <span>01001237942</span> &nbsp;<img height="15px" width="15px" alt="logo" /><br /><img
-              height="50px"
-              width="50px"
-              alt="qr"
-              style="margin-right: 50px"
-            />
-          </p>
-        </div>
-        <div class="invoice-info">
-          <p>التاريخ: 2025-01-03</p>
-          <p>رقم تليفون العميل: 01015744367</p>
-        </div>
-        <br />
-        <table class="invoice-table">
-          <thead>
-            <tr>
-              <th>الصنف</th>
-              <th>سعر</th>
-              <th>كيلو</th>
-              <th>عدد</th>
-              <th>جنيه</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>25 كيلو طماطم</td>
-              <td>-</td>
-              <td>-</td>
-              <td>0</td>
-              <td>170</td>
-            </tr>
-            <tr>
-              <td>25ل 27 كيلو طماطم</td>
-              <td>-</td>
-              <td>-</td>
-              <td>0</td>
-              <td>160</td>
-            </tr>
-            <tr>
-              <td>توصيل</td>
-              <td colspan="4">25</td>
-            </tr>
-            <tr>
-              <td>المجموع</td>
-              <td colspan="4">355</td>
-            </tr>
-          </tbody>
-        </table>
-        <div style="direction: rtl">
-          <div style="margin-top: 10px">العنوان: Alaa Ahmed</div>
-          <div style="margin-top: 10px">المندوب: quick</div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="invoice-container1 invoice"
-      style="
-        height: 13.5cm;
-        border: 1px solid black;
-        border-radius: 5px;
-        width: calc(50% - 37.7953px);
-        padding: 10px;
-        box-sizing: border-box;
-        margin: 5mm;
-        --darkreader-inline-border-top: #8c8273;
-        --darkreader-inline-border-right: #8c8273;
-        --darkreader-inline-border-bottom: #8c8273;
-        --darkreader-inline-border-left: #8c8273;
-      "
-      data-darkreader-inline-border-top=""
-      data-darkreader-inline-border-right=""
-      data-darkreader-inline-border-bottom=""
-      data-darkreader-inline-border-left=""
-    >
-      <header class="invoice-header"></header>
-      <div class="invoice-body">
-        <div class="invoice-info">
-          <p class="invoice-title">دليفري سووق الجملة</p>
-          <img height="70x" width="70px" alt="logo" />
-          <p class="invoice-contact">
-            <span>01001237942</span> &nbsp;<img height="15px" width="15px" alt="logo" /><br /><img
-              height="50px"
-              width="50px"
-              alt="qr"
-              style="margin-right: 50px"
-            />
-          </p>
-        </div>
-        <div class="invoice-info">
-          <p>التاريخ: 2025-01-03</p>
-          <p>رقم تليفون العميل: 01094922289</p>
-        </div>
-        <br />
-        <table class="invoice-table">
-          <thead>
-            <tr>
-              <th>الصنف</th>
-              <th>سعر</th>
-              <th>كيلو</th>
-              <th>عدد</th>
-              <th>جنيه</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>جزر</td>
-              <td>-</td>
-              <td>-</td>
-              <td>0</td>
-              <td>123</td>
-            </tr>
-            <tr>
-              <td>sad</td>
-              <td>-</td>
-              <td>-</td>
-              <td>0</td>
-              <td>100</td>
-            </tr>
-            <tr>
-              <td>توصيل</td>
-              <td colspan="4">25</td>
-            </tr>
-            <tr>
-              <td>المجموع</td>
-              <td colspan="4">248</td>
-            </tr>
-          </tbody>
-        </table>
-        <div style="direction: rtl">
-          <div style="margin-top: 10px">العنوان: Ahmed 3bdo</div>
-          <div style="margin-top: 10px">المندوب: quick</div>
+      <div
+        class="invoice-container1 invoice"
+        style="
+          height: 13.5cm;
+          border: 1px solid black;
+          border-radius: 5px;
+          width: calc(50% - 37.7953px);
+          padding: 10px;
+          box-sizing: border-box;
+          margin: 5mm;
+          --darkreader-inline-border-top: #8c8273;
+          --darkreader-inline-border-right: #8c8273;
+          --darkreader-inline-border-bottom: #8c8273;
+          --darkreader-inline-border-left: #8c8273;
+        "
+        data-darkreader-inline-border-top=""
+        data-darkreader-inline-border-right=""
+        data-darkreader-inline-border-bottom=""
+        data-darkreader-inline-border-left=""
+      >
+        <header class="invoice-header"></header>
+        <div class="invoice-body">
+          <div class="invoice-info">
+            <p class="invoice-title">دليفري سووق الجملة</p>
+            <img height="70x" width="70px" alt="logo" />
+            <p class="invoice-contact">
+              <span>01001237942</span> &nbsp;<img height="15px" width="15px" alt="logo" /><br /><img
+                height="50px"
+                width="50px"
+                alt="qr"
+                style="margin-right: 50px"
+              />
+            </p>
+          </div>
+          <div class="invoice-info">
+            <p>التاريخ: 2025-01-03</p>
+            <p>رقم تليفون العميل: 01015744367</p>
+          </div>
+          <br />
+          <table class="invoice-table">
+            <thead>
+              <tr>
+                <th>الصنف</th>
+                <th>سعر</th>
+                <th>كيلو</th>
+                <th>عدد</th>
+                <th>جنيه</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>25 كيلو طماطم</td>
+                <td>-</td>
+                <td>-</td>
+                <td>0</td>
+                <td>170</td>
+              </tr>
+              <tr>
+                <td>25ل 27 كيلو طماطم</td>
+                <td>-</td>
+                <td>-</td>
+                <td>0</td>
+                <td>160</td>
+              </tr>
+              <tr>
+                <td>توصيل</td>
+                <td colspan="4">25</td>
+              </tr>
+              <tr>
+                <td>المجموع</td>
+                <td colspan="4">355</td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="direction: rtl">
+            <div style="margin-top: 10px">العنوان: Alaa Ahmed</div>
+            <div style="margin-top: 10px">المندوب: quick</div>
+          </div>
         </div>
       </div>
-    </div>
-    <div
-      class="invoice-container1 invoice"
-      style="
-        height: 13.5cm;
-        border: 1px solid black;
-        border-radius: 5px;
-        width: calc(50% - 37.7953px);
-        padding: 10px;
-        box-sizing: border-box;
-        margin: 5mm;
-        --darkreader-inline-border-top: #8c8273;
-        --darkreader-inline-border-right: #8c8273;
-        --darkreader-inline-border-bottom: #8c8273;
-        --darkreader-inline-border-left: #8c8273;
-      "
-      data-darkreader-inline-border-top=""
-      data-darkreader-inline-border-right=""
-      data-darkreader-inline-border-bottom=""
-      data-darkreader-inline-border-left=""
-    >
-      <header class="invoice-header"></header>
-      <div class="invoice-body">
-        <div class="invoice-info">
-          <p class="invoice-title">دليفري سووق الجملة</p>
-          <img height="70x" width="70px" alt="logo" />
-          <p class="invoice-contact">
-            <span>01001237942</span> &nbsp;<img height="15px" width="15px" alt="logo" /><br /><img
-              height="50px"
-              width="50px"
-              alt="qr"
-              style="margin-right: 50px"
-            />
-          </p>
+      <div
+        class="invoice-container1 invoice"
+        style="
+          height: 13.5cm;
+          border: 1px solid black;
+          border-radius: 5px;
+          width: calc(50% - 37.7953px);
+          padding: 10px;
+          box-sizing: border-box;
+          margin: 5mm;
+          --darkreader-inline-border-top: #8c8273;
+          --darkreader-inline-border-right: #8c8273;
+          --darkreader-inline-border-bottom: #8c8273;
+          --darkreader-inline-border-left: #8c8273;
+        "
+        data-darkreader-inline-border-top=""
+        data-darkreader-inline-border-right=""
+        data-darkreader-inline-border-bottom=""
+        data-darkreader-inline-border-left=""
+      >
+        <header class="invoice-header"></header>
+        <div class="invoice-body">
+          <div class="invoice-info">
+            <p class="invoice-title">دليفري سووق الجملة</p>
+            <img height="70x" width="70px" alt="logo" />
+            <p class="invoice-contact">
+              <span>01001237942</span> &nbsp;<img height="15px" width="15px" alt="logo" /><br /><img
+                height="50px"
+                width="50px"
+                alt="qr"
+                style="margin-right: 50px"
+              />
+            </p>
+          </div>
+          <div class="invoice-info">
+            <p>التاريخ: 2025-01-03</p>
+            <p>رقم تليفون العميل: 01094922289</p>
+          </div>
+          <br />
+          <table class="invoice-table">
+            <thead>
+              <tr>
+                <th>الصنف</th>
+                <th>سعر</th>
+                <th>كيلو</th>
+                <th>عدد</th>
+                <th>جنيه</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>جزر</td>
+                <td>-</td>
+                <td>-</td>
+                <td>0</td>
+                <td>123</td>
+              </tr>
+              <tr>
+                <td>sad</td>
+                <td>-</td>
+                <td>-</td>
+                <td>0</td>
+                <td>100</td>
+              </tr>
+              <tr>
+                <td>توصيل</td>
+                <td colspan="4">25</td>
+              </tr>
+              <tr>
+                <td>المجموع</td>
+                <td colspan="4">248</td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="direction: rtl">
+            <div style="margin-top: 10px">العنوان: Ahmed 3bdo</div>
+            <div style="margin-top: 10px">المندوب: quick</div>
+          </div>
         </div>
-        <div class="invoice-info">
-          <p>التاريخ: 2025-01-03</p>
-          <p>رقم تليفون العميل: 01007744641</p>
-        </div>
-        <br />
-        <table class="invoice-table">
-          <thead>
-            <tr>
-              <th>الصنف</th>
-              <th>سعر</th>
-              <th>كيلو</th>
-              <th>عدد</th>
-              <th>جنيه</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>25 كيلو طماطم</td>
-              <td>-</td>
-              <td>-</td>
-              <td>0</td>
-              <td>170</td>
-            </tr>
-            <tr>
-              <td>10كيلو طماطم</td>
-              <td>-</td>
-              <td>10</td>
-              <td>1</td>
-              <td>80</td>
-            </tr>
-            <tr>
-              <td>توصيل</td>
-              <td colspan="4">25</td>
-            </tr>
-            <tr>
-              <td>المجموع</td>
-              <td colspan="4">275</td>
-            </tr>
-          </tbody>
-        </table>
-        <div style="direction: rtl">
-          <div style="margin-top: 10px">العنوان: Abdallah El Mahdy</div>
-          <div style="margin-top: 10px">المندوب: quick</div>
+      </div>
+      <div
+        class="invoice-container1 invoice"
+        style="
+          height: 13.5cm;
+          border: 1px solid black;
+          border-radius: 5px;
+          width: calc(50% - 37.7953px);
+          padding: 10px;
+          box-sizing: border-box;
+          margin: 5mm;
+          --darkreader-inline-border-top: #8c8273;
+          --darkreader-inline-border-right: #8c8273;
+          --darkreader-inline-border-bottom: #8c8273;
+          --darkreader-inline-border-left: #8c8273;
+        "
+        data-darkreader-inline-border-top=""
+        data-darkreader-inline-border-right=""
+        data-darkreader-inline-border-bottom=""
+        data-darkreader-inline-border-left=""
+      >
+        <header class="invoice-header"></header>
+        <div class="invoice-body">
+          <div class="invoice-info">
+            <p class="invoice-title">دليفري سووق الجملة</p>
+            <img height="70x" width="70px" alt="logo" />
+            <p class="invoice-contact">
+              <span>01001237942</span> &nbsp;<img height="15px" width="15px" alt="logo" /><br /><img
+                height="50px"
+                width="50px"
+                alt="qr"
+                style="margin-right: 50px"
+              />
+            </p>
+          </div>
+          <div class="invoice-info">
+            <p>التاريخ: 2025-01-03</p>
+            <p>رقم تليفون العميل: 01007744641</p>
+          </div>
+          <br />
+          <table class="invoice-table">
+            <thead>
+              <tr>
+                <th>الصنف</th>
+                <th>سعر</th>
+                <th>كيلو</th>
+                <th>عدد</th>
+                <th>جنيه</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>25 كيلو طماطم</td>
+                <td>-</td>
+                <td>-</td>
+                <td>0</td>
+                <td>170</td>
+              </tr>
+              <tr>
+                <td>10كيلو طماطم</td>
+                <td>-</td>
+                <td>10</td>
+                <td>1</td>
+                <td>80</td>
+              </tr>
+              <tr>
+                <td>توصيل</td>
+                <td colspan="4">25</td>
+              </tr>
+              <tr>
+                <td>المجموع</td>
+                <td colspan="4">275</td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="direction: rtl">
+            <div style="margin-top: 10px">العنوان: Abdallah El Mahdy</div>
+            <div style="margin-top: 10px">المندوب: quick</div>
+          </div>
         </div>
       </div>
     </div>

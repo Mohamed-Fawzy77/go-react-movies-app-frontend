@@ -14,6 +14,7 @@ import ProductDetails from "./components/ProductDetails";
 import UsersPage from "./components/UsersPage";
 import UpdateOrder from "./components/UpdateOrder";
 import SingleOrderPrinter from "./components/SingleOrderPrint";
+import PrintEveryThing from "./components/prints/PrintEveryThing";
 
 const router = createBrowserRouter([
   {
@@ -69,6 +70,10 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: <Login />,
+      },
+      {
+        path: "/print",
+        element: <PrintEveryThing />,
       },
     ],
   },
