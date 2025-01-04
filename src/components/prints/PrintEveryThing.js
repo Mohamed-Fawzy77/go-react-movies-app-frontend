@@ -54,7 +54,7 @@ const PrintEveryThing = ({ orders }) => {
       a.productPricing.product.name.localeCompare(b.productPricing.product.name)
     );
 
-    const chunkedOrderProducts = chunkArray(orderProducts, 30);
+    const chunkedOrderProducts = chunkArray(orderProducts, 28);
 
     const agentTotalMoney = orders.reduce((acc, order) => acc + order.orderTotalPriceAfterDiscount, 0);
     const ordersCount = orders.length;
