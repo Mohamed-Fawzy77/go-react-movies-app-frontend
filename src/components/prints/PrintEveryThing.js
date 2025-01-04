@@ -1,12 +1,18 @@
 // InvoicePrinter.js
 import React, { useEffect, useRef, useState } from "react";
 import Invoice from "../Invoice";
-import { fetchOrders } from "../../http/product";
 import printInvoicesStyle from "../../javascriptStyles/printInvoicesStyle";
 const amountPattern = /\d+(ك|ج)$/;
 
-const PrintEveryThing = ({}) => {
-  const [orders, setOrders] = useState([]);
+function chunkArray(array, chunkSize) {
+  const result = [];
+  for (let i = 0; i < array.length; i += chunkSize) {
+    result.push(array.slice(i, i + chunkSize));
+  }
+  return result;
+}
+
+const PrintEveryThing = ({ orders }) => {
   const contentRef = useRef();
   const content2Ref = useRef();
 
@@ -20,6 +26,8 @@ const PrintEveryThing = ({}) => {
     acc[deliveryAgentName].push(order);
     return acc;
   }, {});
+
+  deliveryToOrdersMap["الكل"] = sortedOrders;
 
   const contentArr = [];
 
@@ -42,23 +50,26 @@ const PrintEveryThing = ({}) => {
       }
     }
 
-    const orderProducts = Object.values(orderProductsMap);
+    const orderProducts = Object.values(orderProductsMap).sort((a, b) =>
+      a.productPricing.product.name.localeCompare(b.productPricing.product.name)
+    );
+
+    const chunkedOrderProducts = chunkArray(orderProducts, 30);
 
     const agentTotalMoney = orders.reduce((acc, order) => acc + order.orderTotalPriceAfterDiscount, 0);
     const ordersCount = orders.length;
 
-    const content = (
-      <>
-        <div style={{ display: "flex", justifyContent: "space-between", direction: "rtl" }}>
-          <span> {new Date().toISOString()}</span>
-          <span> {deliveryAgentName ? `المندوب: ${deliveryAgentName}` : ""}</span>
-          <span> {deliveryAgentName && agentTotalMoney ? `اجمالى : ${agentTotalMoney}` : ""}</span>
-          <span> {ordersCount ? `عدد الطلبات: ${ordersCount}` : ""}</span>
-        </div>
-        <ul style={{ direction: "rtl", fontSize: "30px" }}>
-          {orderProducts
-            .sort((a, b) => a.productPricing.product.name.localeCompare(b.productPricing.product.name))
-            .map((orderProduct, index) => {
+    const c = chunkedOrderProducts.map((orderProducts) => {
+      const content = (
+        <>
+          <div style={{ display: "flex", justifyContent: "space-between", direction: "rtl" }}>
+            <span> {new Date().toISOString()}</span>
+            <span> {deliveryAgentName ? `المندوب: ${deliveryAgentName}` : ""}</span>
+            <span> {deliveryAgentName && agentTotalMoney ? `اجمالى : ${agentTotalMoney}` : ""}</span>
+            <span> {ordersCount ? `عدد الطلبات: ${ordersCount}` : ""}</span>
+          </div>
+          <ul style={{ direction: "rtl", fontSize: "30px" }}>
+            {orderProducts.map((orderProduct, index) => {
               const PP = orderProduct.productPricing;
               return (
                 <>
@@ -73,61 +84,28 @@ const PrintEveryThing = ({}) => {
                       :{orderProduct.quantity}
                     </div>
                   </div>
-                  {index % 10 === 0 && (
-                    <>
-                      {/* <div style={{ pageBreakAfter: "always" }} /> */}
-                      {/* <div style={{ display: "flex", justifyContent: "space-between", direction: "rtl" }}>
-                        <span> {new Date().toISOString()}</span>
-                        <span> {deliveryAgentName ? `المندوب: ${deliveryAgentName}` : ""}</span>
-                        <span>
-                          {" "}
-                          {deliveryAgentName && agentTotalMoney ? `اجمالى : ${agentTotalMoney}` : ""}
-                        </span>
-                        <span> {ordersCount ? `عدد الطلبات: ${ordersCount}` : ""}</span>
-                      </div> */}
-                    </>
-                  )}
                 </>
               );
             })}
-        </ul>
-      </>
-    );
+          </ul>
+          <div style={{ pageBreakAfter: "always" }} />
+        </>
+      );
+      return content;
+    });
 
-    contentArr.push(content);
+    if (deliveryAgentName === "الكل") {
+      contentArr.unshift(c);
+    } else {
+      contentArr.push(c);
+    }
   }
 
-  useEffect(() => {
-    const todayDate = new Date().toISOString().slice(0, 10).toString();
-    fetchOrders(todayDate, setOrders);
-  }, []);
-
-  let ordersInPage = 0;
-
   let content = sortedOrders.map((order, index) => {
-    const nextOrder = sortedOrders[index + 1];
-    let pageBreak = false;
-    ordersInPage++;
-    console.log({
-      ordersInPage,
-      nextOrder,
-      order: order.deliveryAgent?.name,
-      nextOrder: nextOrder?.deliveryAgent?.name,
-    });
-    if (
-      ordersInPage % 4 ===
-      0
-      //   ||
-      //   (nextOrder && nextOrder.deliveryAgent?.name !== order.deliveryAgent?.name)
-    ) {
-      pageBreak = true;
-      //   ordersInPage = 0;
-    }
     return (
       <>
         <Invoice order={order} />
-        {/* <div>order</div> */}
-        {pageBreak && (
+        {(index + 1) % 4 === 0 && (
           <>
             <div style={{ pageBreakAfter: "always" }} />
           </>
@@ -164,21 +142,22 @@ const PrintEveryThing = ({}) => {
   };
 
   return (
-    <div>
-      <input type="date" onChange={(e) => fetchOrders(e.target.value, setOrders)} />
+    <>
       <button onClick={handlePrintEverything}>Print Every thing</button>
-      <div ref={contentRef} style={{ height: "100vh", backgroundColor: "white" }}>
-        {content}
-      </div>
+      <div style={{ display: "none" }}>
+        <div ref={contentRef} style={{ height: "100vh", backgroundColor: "white" }}>
+          {content}
+        </div>
 
-      <div ref={content2Ref}>
-        {contentArr.map((content, index) => (
-          <div key={index} style={{ pageBreakAfter: "always" }}>
-            {content}
-          </div>
-        ))}
+        <div ref={content2Ref}>
+          {contentArr.map((content, index) => (
+            <div key={index} style={{ pageBreakAfter: "always" }}>
+              {content}
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

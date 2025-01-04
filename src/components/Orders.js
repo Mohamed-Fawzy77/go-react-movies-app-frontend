@@ -6,6 +6,7 @@ import InvoicePrinter from "./InvoicePrinter";
 import Modal from "react-modal";
 import { toast } from "react-toastify";
 import { getFirstTwoLetters } from "../utils/string";
+import PrintEveryThing from "./prints/PrintEveryThing";
 const backendURL = process.env.REACT_APP_BACKEND_URL;
 const StatusMapper = {
   1: "Pending",
@@ -325,6 +326,7 @@ const OrdersPage = () => {
         ordersCount={orders.length}
         deliveryAgentName={deliveryAgent ? deliveryAgent.name : ""}
       />
+      <PrintEveryThing orders={orders} />
       <button onClick={() => setIsUpdateAllOrdersModalOpen(true)}> تعديل كل الطلبات </button>
       <Table columns={columns} data={orders} setFilteredRows={setFilteredRows} />
 
