@@ -61,7 +61,7 @@ const PrintEveryThing = ({ orders }) => {
 
     const c = chunkedOrderProducts.map((orderProducts) => {
       const content = (
-        <>
+        <div style={{ margin: "50px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", direction: "rtl" }}>
             <span> {new Date().toISOString()}</span>
             <span> {deliveryAgentName ? `المندوب: ${deliveryAgentName}` : ""}</span>
@@ -88,8 +88,8 @@ const PrintEveryThing = ({ orders }) => {
               );
             })}
           </ul>
-          <div style={{ pageBreakAfter: "always" }} />
-        </>
+          <div style={{ pageBreakAfter: "always" }}></div>
+        </div>
       );
       return content;
     });
@@ -151,9 +151,7 @@ const PrintEveryThing = ({ orders }) => {
 
         <div ref={content2Ref}>
           {contentArr.map((content, index) => (
-            <div key={index} style={{ pageBreakAfter: "always" }}>
-              {content}
-            </div>
+            <div key={index}>{content}</div>
           ))}
         </div>
       </div>
