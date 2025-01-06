@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useTable, usePagination, useSortBy, useFilters } from "react-table";
 
 // Default UI for filtering
@@ -16,12 +16,92 @@ const DefaultColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows
   );
 };
 
+// Multi-Select Filter Component
+const MultiSelectFilter = ({ column: { filterValue, setFilter, preFilteredRows, id } }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const options = useMemo(() => {
+    // Extract unique values for the column
+    const optionsSet = new Set();
+    preFilteredRows.forEach((row) => {
+      optionsSet.add(row.values[id]);
+    });
+    return [...optionsSet];
+  }, [id, preFilteredRows]);
+
+  const toggleDropdown = () => setIsOpen(!isOpen);
+
+  const handleCheckboxChange = (value) => {
+    let newFilterValue = filterValue || [];
+    if (newFilterValue.includes(value)) {
+      newFilterValue = newFilterValue.filter((v) => v !== value); // Remove value
+    } else {
+      newFilterValue.push(value); // Add value
+    }
+    setFilter(newFilterValue.length ? newFilterValue : undefined); // Apply filter or clear
+  };
+
+  return (
+    <div>
+      <button onClick={toggleDropdown} style={{ width: "100%", cursor: "pointer" }}>
+        Filter
+      </button>
+      {isOpen && (
+        <div
+          style={{
+            border: "1px solid gray",
+            padding: "5px",
+            position: "absolute",
+            background: "white",
+            zIndex: 10,
+          }}
+        >
+          {options.map((option) => (
+            <div key={option}>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={filterValue ? filterValue.includes(option) : false}
+                  onChange={() => handleCheckboxChange(option)}
+                />
+                {option}
+              </label>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Filter Function
+const multiSelectFilterFn = (rows, columnIds, filterValue) => {
+  return rows.filter((row) => (filterValue ? filterValue.includes(row.values[columnIds[0]]) : true));
+};
+
+// Register the filter function
+multiSelectFilterFn.autoRemove = (val) => !val;
+
 const Table = ({ columns, data, setFilteredRows }) => {
-  const defaultColumn = React.useMemo(
+  const defaultColumn = useMemo(
     () => ({
       Filter: DefaultColumnFilter,
     }),
     []
+  );
+
+  const enhancedColumns = useMemo(
+    () =>
+      columns.map((column) => {
+        if (column.Header === "Delivery Agent") {
+          return {
+            ...column,
+            Filter: MultiSelectFilter,
+            filter: multiSelectFilterFn,
+          };
+        }
+        return column;
+      }),
+    [columns]
   );
 
   const {
@@ -39,7 +119,7 @@ const Table = ({ columns, data, setFilteredRows }) => {
     state: { pageIndex },
   } = useTable(
     {
-      columns,
+      columns: enhancedColumns,
       data,
       defaultColumn,
       initialState: { pageSize: 1000 },
@@ -68,7 +148,7 @@ const Table = ({ columns, data, setFilteredRows }) => {
                 >
                   {column.render("Header")}
                   <span>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
-                  <div>{column.canFilter ? column.render("Filter") : null}</div> {/* Filter input */}
+                  <div>{column.canFilter ? column.render("Filter") : null}</div>
                 </th>
               ))}
             </tr>
