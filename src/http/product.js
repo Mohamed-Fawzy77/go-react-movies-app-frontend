@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 const backendURL = process.env.REACT_APP_BACKEND_URL;
 export const fetchStandardProduct = async (id, setStandardProduct) => {
   try {
@@ -19,8 +20,30 @@ export const fetchProducts = async (id, setProducts) => {
   }
 };
 
+export const fetchActivePPs = async (setPPs) => {
+  try {
+    const url = `${backendURL}/product-pricings/web`;
+
+    const res = await axios.get(url);
+    setPPs(res.data.PPs);
+  } catch (error) {
+    console.error("Error fetching orders", error);
+  }
+};
+
+export const updateActivePPSortIndex = async (PPId, newSortIndex) => {
+  try {
+    const url = `${backendURL}/product-pricings/${PPId}/sort-index`;
+
+    await axios.patch(url, { sortIndex: parseFloat(newSortIndex) });
+    toast.success("تم التعديل بنجاح");
+  } catch (error) {
+    toast.error("حدث خطأ في التعديل");
+    console.error("Error fetching orders", error);
+  }
+};
+
 export const fetchOrders = async (date, setOrders) => {
-  console.log({ date, setOrders });
   try {
     const url = `${backendURL}/orders?deliveryDate=${date}`;
 
