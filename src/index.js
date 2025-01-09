@@ -16,6 +16,7 @@ import UpdateOrder from "./components/UpdateOrder";
 import SingleOrderPrinter from "./components/SingleOrderPrint";
 import PrintEveryThing from "./components/prints/PrintEveryThing";
 import { SortActivePPs } from "./components/SortActivePPsPage";
+import { ActionsPage } from "./ActionsPage";
 
 const router = createBrowserRouter([
   {
@@ -75,6 +76,10 @@ const router = createBrowserRouter([
       {
         path: "/active-pps",
         element: <SortActivePPs />,
+      },
+      {
+        path: "/actions",
+        element: <ActionsPage />,
       },
     ],
   },

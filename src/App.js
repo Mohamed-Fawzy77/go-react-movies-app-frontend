@@ -157,6 +157,11 @@ function App() {
                         <span className="badge bg-success"> sort </span>
                       </Link>
                     </li>
+                    <li className="nav-item">
+                      <Link to="/actions" className="list-group-item list-group-item-action">
+                        <span className="badge bg-success"> actions </span>
+                      </Link>
+                    </li>
                   </>
                 )}
                 {jwt ? (

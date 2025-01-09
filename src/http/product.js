@@ -61,3 +61,12 @@ export const updateProductImage = async (productId, image) => {
     console.error("Error updating product image", error);
   }
 };
+
+export const fetchActions = async (date, setActions) => {
+  try {
+    const response = await axios.get(`${backendURL}/user-action?date=${date}`);
+    setActions(response.data.actions);
+  } catch (error) {
+    console.error("Error fetching actions", error);
+  }
+};
