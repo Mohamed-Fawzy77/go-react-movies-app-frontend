@@ -7,6 +7,7 @@ import Modal from "react-modal";
 import { toast } from "react-toastify";
 import { getFirstTwoLetters } from "../utils/string";
 import PrintEveryThing from "./prints/PrintEveryThing";
+import { getDuplicatedOrders } from "../utils/getDuplicatedOrders";
 const backendURL = process.env.REACT_APP_BACKEND_URL;
 const StatusMapper = {
   1: "Pending",
@@ -55,10 +56,7 @@ const OrdersPage = () => {
   const [toBeUpdatedToProductPPs, setToBeUpdatedToProductPPs] = useState([]);
   const [toBeUpdatedToPP, setToBeUpdatedToPP] = useState(null);
 
-  // const getPPsForProduct = (prodId) => {
-  //   const PPs = await axios.get(`${backendURL}/product-pricings/${prodId}`);
-  //   setToBeUpdatedProductPPs(PPs.data);
-  // };
+  const duplicatedOrdesPhones = getDuplicatedOrders(orders);
 
   useEffect(() => {
     async function fetchPPs() {
@@ -328,6 +326,18 @@ const OrdersPage = () => {
       />
       <PrintEveryThing orders={orders} />
       <button onClick={() => setIsUpdateAllOrdersModalOpen(true)}> تعديل كل الطلبات </button>
+
+      {duplicatedOrdesPhones.length > 0 && (
+        <div>
+          <h2>Orders with duplicated phones</h2>
+          <ul>
+            {duplicatedOrdesPhones.map((phone, index) => (
+              <li key={index}>{phone}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <Table columns={columns} data={orders} setFilteredRows={setFilteredRows} />
 
       {/* update all orders modal */}
