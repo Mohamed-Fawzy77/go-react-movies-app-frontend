@@ -62,6 +62,14 @@ export const updateProductImage = async (productId, image) => {
   }
 };
 
+export const updateStandardProductImage = async (productId, image) => {
+  try {
+    await axios.put(`${backendURL}/standard-products/${productId}/image`, { image });
+  } catch (error) {
+    console.error("Error updating product image", error);
+  }
+};
+
 export const fetchActions = async (date, setActions) => {
   try {
     const response = await axios.get(`${backendURL}/user-action?date=${date}`);

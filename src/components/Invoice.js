@@ -78,7 +78,7 @@ const Invoice = ({ order }) => {
               </tr>
             )}
 
-            <br />
+            {/* <br /> */}
             <tr>
               <td>المجموع</td>
               <td colSpan={4}>{order.orderTotalPriceAfterDiscount}</td>
@@ -86,11 +86,10 @@ const Invoice = ({ order }) => {
           </tbody>
         </table>
         <div style={{ direction: "rtl" }}>
-          <div style={{ marginTop: "10px" }}> العنوان: {order.address}</div>
-          {order.notes && <div style={{ marginTop: "10px" }}> الملاحظات: {order.notes} </div>}
-          {order.deliveryAgent && (
-            <div style={{ marginTop: "10px" }}> المندوب: {order.deliveryAgent.name} </div>
-          )}
+          <div> العنوان: {order.address}</div>
+          {order.notes && <div> الملاحظات: {order.notes} </div>}
+          {order.deliveryAgent && <div> المندوب: {order.deliveryAgent.name} </div>}
+          {order.buyerName && <div> العميل: {order.buyerName} </div>}
         </div>
       </div>
     </div>

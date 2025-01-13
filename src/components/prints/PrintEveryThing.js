@@ -101,15 +101,35 @@ const PrintEveryThing = ({ orders }) => {
     }
   }
 
-  let content = sortedOrders.map((order, index) => {
+  // const groupedOrdersByDeliveryAgent = Object.entries(deliveryToOrdersMap).map(
+  //   ([deliveryAgentName, orders]) => ({
+  //     deliveryAgentName,
+  //     orders,
+  //   })
+  // );
+
+  const content = Object.entries(deliveryToOrdersMap).map(([deliveryAgentName, orders]) => {
+    if (deliveryAgentName === "الكل") {
+      return null;
+    }
+
     return (
       <>
-        <Invoice order={order} />
-        {(index + 1) % 4 === 0 && (
-          <>
-            <div style={{ pageBreakAfter: "always" }} />
-          </>
-        )}
+        <div class="all-invoices-container">
+          {orders.map((order, index) => {
+            return (
+              <>
+                <Invoice order={order} />
+                {(index + 1) % 4 === 0 && (
+                  <>
+                    <div style={{ pageBreakAfter: "always" }} />
+                  </>
+                )}
+              </>
+            );
+          })}
+        </div>
+        <div style={{ pageBreakAfter: "always" }}> </div>
       </>
     );
   });
@@ -125,10 +145,7 @@ const PrintEveryThing = ({ orders }) => {
                 </head>
                 <body>
                     ${content2Ref.current.innerHTML}
-                    
-                    <div class="all-invoices-container">
                     ${contentRef.current.innerHTML}
-                    </div>
                 </body>
             </html>
     `;

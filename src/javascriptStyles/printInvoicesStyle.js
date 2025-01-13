@@ -61,7 +61,7 @@ text-align: center;
 .invoice-table th,
 .invoice-table td {
 border: 1px solid #d9d9d9;
-padding: 8px;
+padding: 1px;
 font-size: 14px;
 }
 

@@ -14,11 +14,20 @@ export function SortActivePPs() {
     fetchActivePPs(setPPs);
   }, []);
 
+  const handleCopyItemsPricesString = () => {
+    const prices = PPs.map((PP) => `${PP.product.name} ب ${PP.totalPrice} جنيه`).join("\n");
+    navigator.clipboard.writeText(prices);
+  };
+
   return (
-    <ul>
-      {PPs.sort((a, b) => a.sortIndex - b.sortIndex).map((PP) => (
-        <ActivePP key={PP._id} handleUpdatePPSortIndex={handleUpdatePPSortIndex} PP={PP} />
-      ))}
-    </ul>
+    <>
+      <button onClick={handleCopyItemsPricesString}>copy prices</button>
+
+      <ul>
+        {PPs.sort((a, b) => a.sortIndex - b.sortIndex).map((PP) => (
+          <ActivePP key={PP._id} handleUpdatePPSortIndex={handleUpdatePPSortIndex} PP={PP} />
+        ))}
+      </ul>
+    </>
   );
 }
