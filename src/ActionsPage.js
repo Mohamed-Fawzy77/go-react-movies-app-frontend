@@ -32,7 +32,9 @@ export function ActionsPage() {
               <li key={action._id}>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                   <span>{action.action}</span>
-                  <span>{action.timestamp}</span>
+                  <span>
+                    {new Date(action.timestamp).getHours()}:{new Date(action.timestamp).getMinutes()}
+                  </span>
                 </div>
               </li>
             ))}

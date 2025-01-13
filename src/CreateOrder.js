@@ -56,6 +56,7 @@ const CreateOrder = () => {
   const [isUpdateUserModalOpen, setIsUpdateUserModalOpen] = useState(false);
   const [stateUser, setStateUser] = useState({});
   const [notes, setNotes] = useState("");
+  const [address, setAddress] = useState("");
   const { id } = useParams();
   const [deactivatedPPs, setDeactivatedPPs] = useState([]);
   const [isPaidOnline, setIsPaidOnline] = useState(false);
@@ -100,6 +101,7 @@ const CreateOrder = () => {
         setDeliveryDateOption(order.deliveryDate);
         setCustomDeliveryDate(order.deliveryDate);
         setNotes(order.notes);
+        setAddress(order.address);
         setIsPaidOnline(order.isPaidOnline || false);
 
         const isDeliveryDayToday = new Date(order.deliveryDate).toDateString() === new Date().toDateString();
@@ -254,6 +256,7 @@ const CreateOrder = () => {
               deliveryAgent: selectedDeliveryAgent === "None" ? null : selectedDeliveryAgent,
               deliveryDate,
               notes,
+              address,
               isPaidOnline,
             },
             {
@@ -292,6 +295,7 @@ const CreateOrder = () => {
             deliveryAgent: selectedDeliveryAgent === "None" ? null : selectedDeliveryAgent,
             deliveryDate,
             notes,
+            address,
             isPaidOnline,
           },
           {
@@ -478,6 +482,14 @@ const CreateOrder = () => {
             name="notes"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
+            style={{ height: "50px", width: "200px" }}
+          />
+          <br />
+          <label>address:</label> <br />
+          <textarea
+            name="address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
             style={{ height: "50px", width: "200px" }}
           />
           {/* <div> */}
