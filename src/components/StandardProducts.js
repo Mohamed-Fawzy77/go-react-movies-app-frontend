@@ -145,8 +145,8 @@ function StandardProductView({ product, handleDeleteProduct, setEditProduct, nav
       <img
         className="mt-2 mr-2"
         style={{ borderRadius: "10%" }}
-        height={50}
-        width={50}
+        height={30}
+        width={30}
         src={image || product.image || "/placeholder.svg"}
         alt="product"
       />
