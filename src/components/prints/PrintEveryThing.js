@@ -57,7 +57,11 @@ const PrintEveryThing = ({ orders }) => {
     const chunkedOrderProducts = chunkArray(orderProducts, 28);
 
     const agentTotalMoney = orders.reduce((acc, order) => acc + order.orderTotalPriceAfterDiscount, 0);
-    const ordersCount = orders.length;
+    let ordersCount = orders.length;
+
+    if (deliveryAgentName === "الكل") {
+      ordersCount -= 5;
+    }
 
     const c = chunkedOrderProducts.map((orderProducts) => {
       const content = (
