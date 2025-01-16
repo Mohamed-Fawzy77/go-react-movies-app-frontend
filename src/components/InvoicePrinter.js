@@ -1,5 +1,5 @@
 // InvoicePrinter.js
-import React, { useRef } from "react";
+import React, { Fragment, useRef } from "react";
 import Invoice from "./Invoice";
 const amountPattern = /\d+(ك|ج)$/;
 const InvoicePrinter = ({ orders, deliveryAgentName, agentTotalMoney, ordersCount }) => {
@@ -168,8 +168,8 @@ margin: 0;}
             .map((orderProduct, index) => {
               const PP = orderProduct.productPricing;
               return (
-                <div>
-                  <div key={index}>
+                <div key={index}>
+                  <div>
                     {PP.product.name +
                       (amountPattern.test(PP.product.name)
                         ? ""
@@ -187,10 +187,10 @@ margin: 0;}
       <div ref={printRef} style={{ display: "none" }}>
         {orders.map((order, index) => {
           return (
-            <>
-              <Invoice key={index} order={order} />
+            <Fragment key={index}>
+              <Invoice order={order} />
               {(index + 1) % 4 === 0 && <div className="page-break"></div>}
-            </>
+            </Fragment>
           );
         })}
       </div>

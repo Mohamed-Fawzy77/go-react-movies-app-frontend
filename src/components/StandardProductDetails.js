@@ -28,6 +28,17 @@ const StandardProductDetails = () => {
     }
   };
 
+  const handleRemoveImage = async (productId) => {
+    await updateProductImage(productId, "");
+    setProducts((prevProducts) => {
+      const products = prevProducts.map((product) =>
+        product._id === productId ? { ...product, image: "" } : product
+      );
+      return products;
+    });
+    toast.success("Product image removed successfully");
+  };
+
   const handleUpdateImageForExistingProduct = async (event, productId) => {
     const file = event.target.files[0];
     if (file) {
@@ -115,6 +126,7 @@ const StandardProductDetails = () => {
             <button onClick={() => editExistingProductImageInputRefs.current[index].click()}>
               Edit Image
             </button>
+            <button onClick={() => handleRemoveImage(product._id)}>Remove Image</button>
             <input
               // ref={editExistingProductImageInput}
               ref={(el) => (editExistingProductImageInputRefs.current[index] = el)}

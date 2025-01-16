@@ -123,7 +123,7 @@ function App() {
         </div>
         <div className="col text-end mt-3">
           <nav className="navbar navbar-expand-lg navbar-light bg-light trans-impor">
-            <div className="collapse navbar-collapse" id="navbarSupportedContent">
+            <div className="" id="navbarSupportedContent">
               <ul className="navbar-nav">
                 {jwt && (
                   <>

@@ -13,7 +13,6 @@ export const fetchStandardProduct = async (id, setStandardProduct) => {
 export const fetchProducts = async (id, setProducts) => {
   try {
     const response = await axios.get(`${backendURL}/products?standardProduct=${id}`);
-    console.log({ prods: response.data });
     setProducts(response.data);
   } catch (error) {
     console.error("Error fetching products", error);

@@ -5,8 +5,6 @@ export function ActionsPage() {
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10).toString());
   const [actions, setActions] = useState([]);
 
-  console.log({ actions: actions.length });
-
   useEffect(() => {
     fetchActions(date, setActions);
   }, [date]);

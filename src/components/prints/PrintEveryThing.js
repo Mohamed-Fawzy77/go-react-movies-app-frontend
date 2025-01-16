@@ -1,5 +1,5 @@
 // InvoicePrinter.js
-import React, { useEffect, useRef, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import Invoice from "../Invoice";
 import printInvoicesStyle from "../../javascriptStyles/printInvoicesStyle";
 const amountPattern = /\d+(ك|ج)$/;
@@ -63,9 +63,9 @@ const PrintEveryThing = ({ orders }) => {
       ordersCount -= 5;
     }
 
-    const c = chunkedOrderProducts.map((orderProducts) => {
+    const c = chunkedOrderProducts.map((orderProducts, index) => {
       const content = (
-        <div style={{ margin: "50px" }}>
+        <div key={index} style={{ margin: "50px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", direction: "rtl" }}>
             <span> {new Date().toISOString()}</span>
             <span> {deliveryAgentName ? `المندوب: ${deliveryAgentName}` : ""}</span>
@@ -76,9 +76,9 @@ const PrintEveryThing = ({ orders }) => {
             {orderProducts.map((orderProduct, index) => {
               const PP = orderProduct.productPricing;
               return (
-                <>
+                <Fragment key={index}>
                   <div>
-                    <div key={index}>
+                    <div>
                       {PP.product.name +
                         (amountPattern.test(PP.product.name)
                           ? ""
@@ -88,7 +88,7 @@ const PrintEveryThing = ({ orders }) => {
                       :{orderProduct.quantity}
                     </div>
                   </div>
-                </>
+                </Fragment>
               );
             })}
           </ul>
@@ -112,34 +112,31 @@ const PrintEveryThing = ({ orders }) => {
   //   })
   // );
 
-  const content = Object.entries(deliveryToOrdersMap).map(([deliveryAgentName, orders]) => {
+  const content = Object.entries(deliveryToOrdersMap).map(([deliveryAgentName, orders], index) => {
     if (deliveryAgentName === "الكل") {
       return null;
     }
 
     return (
-      <>
-        <div class="all-invoices-container">
-          {orders.map((order, index) => {
+      <Fragment key={index}>
+        <div className="all-invoices-container">
+          {orders.map((order, index, arr) => {
             return (
-              <>
+              <Fragment key={index}>
                 <Invoice order={order} />
-                {(index + 1) % 4 === 0 && (
-                  <>
-                    <div style={{ pageBreakAfter: "always" }} />
-                  </>
+                {arr.length !== index + 1 && (index + 1) % 4 === 0 && (
+                  <div style={{ pageBreakAfter: "always" }} />
                 )}
-              </>
+              </Fragment>
             );
           })}
         </div>
         <div style={{ pageBreakAfter: "always" }}> </div>
-      </>
+      </Fragment>
     );
   });
 
   const handlePrintEverything = () => {
-    console.log(`printing ${orders.length} orders`);
     const printWindow = window.open("", "_blank");
     const htmlContent = `
             <html>
@@ -153,8 +150,6 @@ const PrintEveryThing = ({ orders }) => {
                 </body>
             </html>
     `;
-
-    console.log({ htmlContent });
 
     printWindow.document.open();
     printWindow.document.write(htmlContent);
