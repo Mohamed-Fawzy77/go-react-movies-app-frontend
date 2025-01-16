@@ -33,7 +33,8 @@ export function ActionsPage() {
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                   <span>{action.action}</span>
                   <span>
-                    {new Date(action.timestamp).getHours()}:{new Date(action.timestamp).getMinutes()}
+                    {new Date(action.timestamp).toLocaleDateString("it-IT")}-
+                    {new Date(action.timestamp).toLocaleTimeString("it-IT")}
                   </span>
                 </div>
               </li>
