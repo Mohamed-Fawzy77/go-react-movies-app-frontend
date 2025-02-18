@@ -13,7 +13,6 @@ function App() {
   const [alertMessage, setAlertMessage] = useState("");
   const [alertClassName, setAlertClassName] = useState("d-none");
   const [jwt, setJwt] = useState("");
-  const [SPs, setSPs] = useState([]);
   const [users, setUsers] = useState([]);
   const [deliveryAgents, setDeliveryAgents] = useState([]);
   const [data, setData] = useState([]);
@@ -34,21 +33,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const fetchPP = async () => {
-      try {
-        const response = await fetch(`${backendURL}/product-pricings`, { method: "GET" });
-        const data = await response.json();
-
-        setSPs(data);
-      } catch (error) {
-        setDangerAlert("couldn't fetch product pricing");
-      }
-    };
-
-    fetchPP();
-  }, []);
-
-  useEffect(() => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get(`${backendURL}/users`);
@@ -65,6 +49,40 @@ function App() {
       try {
         const response = await axios.get(`${backendURL}/product-pricings/all`);
         setData(response.data);
+
+        const PPs = [];
+
+        let noImageCount = 0;
+        let defaultSortCount = 0;
+
+        for (const SP of response.data) {
+          for (const product of SP.products) {
+            for (const PP of product.productPricings) {
+              PPs.push(PP);
+              if (!PP.isActiveInWeb) {
+                continue;
+              }
+
+              if (!product.image && !SP.image) {
+                noImageCount++;
+              }
+
+              if (product.sortIndex === 1000) {
+                defaultSortCount++;
+              }
+            }
+          }
+        }
+
+        let dangerText = "";
+        if (noImageCount > 0) {
+          dangerText = `There are ${noImageCount} products without images!`;
+        }
+
+        if (defaultSortCount > 0) {
+          dangerText += ` There are ${defaultSortCount} products with default sort index!`;
+        }
+        setDangerAlert(dangerText);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -96,15 +114,6 @@ function App() {
     setAlertClassName("alert-danger");
   };
 
-  // const backgroundImageStyle = {
-  //   backgroundImage: "url('/bg.jpg')",
-  //   backgroundSize: "cover", // Makes the image cover the entire viewport
-  //   backgroundRepeat: "no-repeat", // Prevents the image from repeating
-  //   backgroundPosition: "center", // Centers the image
-  //   minHeight: "100vh", // Ensures it covers the viewport height
-  //   width: "100%",
-  // };
-
   const backgroundImageStyle = {
     backgroundImage: "url('/bg2.png')",
     backgroundSize: "cover", // Makes the image cover the entire viewport
@@ -115,7 +124,7 @@ function App() {
     width: "100%",
   };
   return (
-    <div className="container" style={backgroundImageStyle}>
+    <div className="container">
       <Alert className={alertClassName} message={alertMessage} />
       <div className="row">
         <div className="col">
@@ -228,7 +237,6 @@ function App() {
               removeAlert,
               setDangerAlert,
               login,
-              PP: SPs,
               users,
               data,
               deliveryAgents,

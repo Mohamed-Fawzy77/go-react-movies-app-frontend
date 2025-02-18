@@ -30,9 +30,9 @@ export const fetchActivePPs = async (setPPs) => {
   }
 };
 
-export const updateActivePPSortIndex = async (PPId, newSortIndex) => {
+export const updateProductSortIndex = async (productId, newSortIndex) => {
   try {
-    const url = `${backendURL}/product-pricings/${PPId}/sort-index`;
+    const url = `${backendURL}/products/${productId}/sort-index`;
 
     await axios.patch(url, { sortIndex: parseFloat(newSortIndex) });
     toast.success("تم التعديل بنجاح");
