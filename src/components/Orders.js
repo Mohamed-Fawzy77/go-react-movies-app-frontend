@@ -26,7 +26,7 @@ function formateDate(dateTime) {
     })
     .replace(",", "");
 }
-function getInfoString(order) {
+export function getInfoString(order) {
   const creator = order.creatorAdmin?.name ? getFirstTwoLetters(order.creatorAdmin?.name) : "-";
   const string = `by: ${creator}
   number: #${order.number}

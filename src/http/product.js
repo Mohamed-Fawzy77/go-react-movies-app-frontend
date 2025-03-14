@@ -42,6 +42,24 @@ export const updateProductSortIndex = async (productId, newSortIndex) => {
   }
 };
 
+export const getOrdersByPhone = async (phone, setOrders) => {
+  try {
+    const url = `${backendURL}/orders/user-orders/${phone}`;
+
+    const res = await axios.get(url);
+    console.log({ data: res.data });
+    if (res.data.invalidUser) {
+      setOrders([]);
+      toast.error("المستخدم غير موجود");
+      return;
+    }
+
+    setOrders(res.data.orders);
+  } catch (error) {
+    console.error("Error fetching orders", error);
+  }
+};
+
 export const fetchOrders = async (date, setOrders) => {
   try {
     const url = `${backendURL}/orders?deliveryDate=${date}`;
