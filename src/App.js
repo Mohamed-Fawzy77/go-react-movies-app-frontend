@@ -6,6 +6,7 @@ import axios from "axios";
 import "./App.css";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { fetchVendors } from "./http/product";
 
 const backendURL = process.env.REACT_APP_BACKEND_URL;
 
@@ -16,8 +17,13 @@ function App() {
   const [users, setUsers] = useState([]);
   const [deliveryAgents, setDeliveryAgents] = useState([]);
   const [data, setData] = useState([]);
+  const [vendors, setVendors] = useState([]);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchVendors(setVendors);
+  }, []);
 
   useEffect(() => {
     if (!jwt) {
@@ -246,6 +252,7 @@ function App() {
               data,
               deliveryAgents,
               jwt,
+              vendors,
             }}
           />
         </div>

@@ -95,3 +95,105 @@ export const fetchActions = async (date, setActions) => {
     console.error("Error fetching actions", error);
   }
 };
+
+export const addPurchase = async (values) => {
+  try {
+    console.log(values);
+    let { standardProduct, vendor, units, totalKilos, mainFees, isMainFeesPaid, extraFees, isExtraFeesPaid } =
+      values;
+
+    if (!vendor) {
+      toast.error("الرجاء اختيار المورد");
+      return;
+    }
+
+    if (!(parseInt(units) > 0)) {
+      toast.error("الرجاء ادخال الوحدات بشكل صحيح");
+      return;
+    }
+
+    if (!(parseFloat(mainFees) > 0)) {
+      toast.error("الرجاء ادخال الرسوم الرئيسية بشكل صحيح");
+      return;
+    }
+
+    try {
+      //validate that total kilos is either an empty string or a positive number
+      if (totalKilos.trim() !== "" && !(parseFloat(totalKilos) >= 0)) {
+        toast.error("الرجاء ادخال الوزن بشكل صحيح");
+        return;
+      }
+
+      //validate the main fees should be more tha
+    } catch (error) {}
+
+    const body = {
+      standardProduct: standardProduct._id,
+      vendor: vendor,
+      units: parseInt(units),
+      totalKilos: totalKilos ? parseInt(totalKilos) : undefined,
+      mainFees: parseFloat(mainFees),
+      isMainFeesPaid,
+      extraFees: parseFloat(extraFees),
+      isExtraFeesPaid,
+    };
+    console.log({ body });
+    await axios.post(`${backendURL}/purchases`, body);
+    toast.success("تم اضافة عملبة الشراء بنجاح");
+    return true;
+  } catch (error) {
+    const errorArray = error?.response?.data?.message;
+    console.log({ errorArray });
+    toast.error(
+      typeof error?.response?.data?.message == "string"
+        ? error?.response?.data?.message
+        : "حدث خطأ في اضافة الشراء"
+    );
+    console.error("Error creating purchase", error);
+  }
+};
+
+export const createNewVendor = async (values) => {
+  try {
+    const { name } = values;
+    if (name.trim().length === 0) {
+      toast.error("الرجاء ادخال اسم المورد");
+      return;
+    }
+
+    await axios.post(`${backendURL}/vendors`, values);
+  } catch (error) {
+    console.log({ error });
+    toast.error(error?.response?.data?.message || "حدث خطأ في اضافة المورد");
+    console.error("Error fetching actions", error);
+  }
+};
+
+export const fetchVendors = async (setVendors) => {
+  try {
+    const response = await axios.get(`${backendURL}/vendors`);
+    setVendors(response.data);
+  } catch (error) {
+    console.error("Error fetching vendors", error);
+  }
+};
+
+export const getWebsiteDownMessage = async (setShutDownMessage) => {
+  try {
+    const response = await axios.get(`${backendURL}/settings/down-message`);
+    setShutDownMessage(response.data);
+  } catch (error) {
+    console.error("Error fetching vendors", error);
+  }
+};
+
+export const setWebsiteDownMessage = async (message) => {
+  try {
+    await axios.patch(`${backendURL}/settings/down-message`, {
+      websiteDownMessage: message,
+    });
+    toast.success("تم تحديث الرسالة بنجاح");
+  } catch (error) {
+    console.error("Error fetching vendors", error);
+  }
+};
