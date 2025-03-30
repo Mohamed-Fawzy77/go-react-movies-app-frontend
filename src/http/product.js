@@ -98,9 +98,17 @@ export const fetchActions = async (date, setActions) => {
 
 export const addPurchase = async (values) => {
   try {
-    console.log(values);
-    let { standardProduct, vendor, units, totalKilos, mainFees, isMainFeesPaid, extraFees, isExtraFeesPaid } =
-      values;
+    let {
+      standardProduct,
+      vendor,
+      units,
+      totalKilos,
+      mainFees,
+      extraFees,
+      paidMainFees,
+      paidExtraFees,
+      date,
+    } = values;
 
     if (!vendor) {
       toast.error("الرجاء اختيار المورد");
@@ -123,8 +131,6 @@ export const addPurchase = async (values) => {
         toast.error("الرجاء ادخال الوزن بشكل صحيح");
         return;
       }
-
-      //validate the main fees should be more tha
     } catch (error) {}
 
     const body = {
@@ -133,11 +139,12 @@ export const addPurchase = async (values) => {
       units: parseInt(units),
       totalKilos: totalKilos ? parseInt(totalKilos) : undefined,
       mainFees: parseFloat(mainFees),
-      isMainFeesPaid,
+      paidMainFees: parseFloat(paidMainFees),
       extraFees: parseFloat(extraFees),
-      isExtraFeesPaid,
+      paidExtraFees: parseFloat(paidExtraFees),
+      date,
     };
-    console.log({ body });
+    console.log({ body, paidExtraFees });
     await axios.post(`${backendURL}/purchases`, body);
     toast.success("تم اضافة عملبة الشراء بنجاح");
     return true;
@@ -173,6 +180,15 @@ export const fetchVendors = async (setVendors) => {
   try {
     const response = await axios.get(`${backendURL}/vendors`);
     setVendors(response.data);
+  } catch (error) {
+    console.error("Error fetching vendors", error);
+  }
+};
+
+export const fetchPurchases = async (setPurchases, date) => {
+  try {
+    const response = await axios.get(`${backendURL}/purchases?date=${date}`);
+    setPurchases(response.data);
   } catch (error) {
     console.error("Error fetching vendors", error);
   }

@@ -18,6 +18,7 @@ import PrintEveryThing from "./components/prints/PrintEveryThing";
 import { SortActivePPs } from "./components/SortActivePPsPage";
 import { ActionsPage } from "./ActionsPage";
 import OrderLookup from "./UserOrdersPage";
+import PurchasesPage from "./Pages/PurchasesPage";
 
 const router = createBrowserRouter([
   {
@@ -85,6 +86,14 @@ const router = createBrowserRouter([
       {
         path: "/user-orders",
         element: <OrderLookup />,
+      },
+      {
+        path: "/actions",
+        element: <ActionsPage />,
+      },
+      {
+        path: "/purchases",
+        element: <PurchasesPage />,
       },
     ],
   },

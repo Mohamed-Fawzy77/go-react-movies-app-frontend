@@ -8,24 +8,13 @@ import Modal from "react-modal";
 import CreateNewVendor from "./CreateVendors";
 import Vendors from "./Vendors";
 import CreateNewPurchase from "./CreatePurchase";
+import { modalStyles } from "./Modal";
 const backendURL = process.env.REACT_APP_BACKEND_URL;
 const PRODUCT_CATEGORIES = {
   1: "Fruit",
   2: "Vegetable",
   3: "canned goods",
   4: "Purchase",
-};
-
-const modalStyle = {
-  content: {
-    direction: "rtl",
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-  },
 };
 
 export default function StandardProductView({ product, handleDeleteProduct, setEditProduct, navigate }) {
@@ -81,7 +70,7 @@ export default function StandardProductView({ product, handleDeleteProduct, setE
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
         contentLabel="Example Modal"
-        style={modalStyle}
+        style={modalStyles}
       >
         <CreateNewPurchase setIsModalOpen={setIsModalOpen} standardProduct={product} />
       </Modal>

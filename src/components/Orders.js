@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { getFirstTwoLetters } from "../utils/string";
 import PrintEveryThing from "./prints/PrintEveryThing";
 import { getDuplicatedOrders } from "../utils/getDuplicatedOrders";
+import { modalStyles } from "./Modal";
 const backendURL = process.env.REACT_APP_BACKEND_URL;
 const StatusMapper = {
   1: "Pending",
@@ -482,16 +483,7 @@ const OrdersPage = () => {
         isOpen={isDeliveryModalOpen}
         onRequestClose={() => setIsDeleteModalOpen(false)}
         contentLabel="assign delivery"
-        style={{
-          content: {
-            top: "50%",
-            left: "50%",
-            right: "auto",
-            bottom: "auto",
-            marginRight: "-50%",
-            transform: "translate(-50%, -50%)",
-          },
-        }}
+        style={modalStyles}
       >
         <h2 className="mb-4">تعيين توصيل</h2>
 

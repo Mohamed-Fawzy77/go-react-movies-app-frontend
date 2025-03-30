@@ -13,7 +13,7 @@ export default function Vendors({ setSelectedVendor, selectedVendor }) {
         onChange={(e) => setSelectedVendor(e.target.value)}
         style={{ width: "100%", padding: "8px" }}
       >
-        <option value={""}>اختر البائع</option>
+        <option value={""}>اختر المورد</option>
         {vendors.map((agent, index) => (
           <option key={index} value={agent._id}>
             {agent.name}
