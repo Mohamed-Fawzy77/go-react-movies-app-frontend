@@ -138,10 +138,10 @@ export const addPurchase = async (values) => {
       vendor: vendor,
       units: parseInt(units),
       totalKilos: totalKilos ? parseInt(totalKilos) : undefined,
-      mainFees: parseFloat(mainFees),
-      paidMainFees: parseFloat(paidMainFees),
-      extraFees: parseFloat(extraFees),
-      paidExtraFees: parseFloat(paidExtraFees),
+      mainFees: parseFloat(mainFees || 0),
+      extraFees: parseFloat(extraFees || 0),
+      paidMainFees: parseFloat(paidMainFees || 0),
+      paidExtraFees: parseFloat(paidExtraFees || 0),
       date,
     };
     console.log({ body, paidExtraFees });

@@ -161,20 +161,20 @@ const PurchasesPage = () => {
   //   );
 
   return (
-    <div>
-      <h1>Purchases</h1>
+    <div style={{ direction: "rtl", padding: "20px" }}>
+      <h1>المشتريات</h1>
       <label>
-        Select Date:
+        اختر التاريخ:
         <input type="date" value={selectedDate} onChange={handleDateChange} />
       </label>
       <Table data={purchases} columns={columns} />
       {isModalOpen && (
         <Modal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)} style={modalStyles}>
-          <h2>Payment for Purchase</h2>
-          <p>Main Fees Left: {selectedPurchase.mainFees - selectedPurchase.totalPaid}</p>
-          <p>Extra Fees Left: {selectedPurchase.extraFees - selectedPurchase.totalPaid}</p>
+          <h2>الدفع للمشتريات</h2>
+          <p>المصاريف الرئيسية المتبقية: {selectedPurchase.mainFees - selectedPurchase.paidMainFees}</p>
+
           <label>
-            Main Fees Payment:
+            دفع المصاريف الرئيسية:
             <input
               type="number"
               value={mainFeesPaid}
@@ -188,10 +188,12 @@ const PurchasesPage = () => {
               checked={payAllMainFees}
               onChange={(e) => setPayAllMainFees(e.target.checked)}
             />
-            Pay All Unpaid Main Fees
+            دفع جميع المصاريف الرئيسية غير المدفوعة
           </label>
+
+          <p>المصاريف الإضافية المتبقية: {selectedPurchase.extraFees - selectedPurchase.paidExtraFees}</p>
           <label>
-            Extra Fees Payment:
+            دفع المصاريف الإضافية:
             <input
               type="number"
               value={extraFeesPaid}
@@ -205,9 +207,10 @@ const PurchasesPage = () => {
               checked={payAllExtraFees}
               onChange={(e) => setPayAllExtraFees(e.target.checked)}
             />
-            Pay All Unpaid Extra Fees
+            دفع جميع المصاريف الإضافية غير المدفوعة
           </label>
-          <button onClick={handlePayment}>Submit Payment</button>
+          <br />
+          <button onClick={handlePayment}>إرسال الدفع</button>
         </Modal>
       )}
     </div>
